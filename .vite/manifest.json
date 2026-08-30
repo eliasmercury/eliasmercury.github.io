@@ -6,33 +6,54 @@
       "_rolldown-runtime-C60lm6uB.js"
     ]
   },
+  "_lm-mark-BQ_N6ydp.js": {
+    "file": "_next/static/chunks/lm-mark-BQ_N6ydp.js",
+    "name": "lm-mark",
+    "imports": [
+      "_rolldown-runtime-C60lm6uB.js",
+      "_framework-BgSIrAUN.js"
+    ]
+  },
   "_rolldown-runtime-C60lm6uB.js": {
     "file": "_next/static/chunks/rolldown-runtime-C60lm6uB.js",
     "name": "rolldown-runtime"
   },
   "app/download/page.tsx": {
-    "file": "_next/static/chunks/page-Dadl482u.js",
+    "file": "_next/static/chunks/page-CrvHOFJH.js",
     "name": "page",
     "src": "app/download/page.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_rolldown-runtime-C60lm6uB.js",
       "app/immersive-story.tsx",
+      "_lm-mark-BQ_N6ydp.js",
       "_framework-BgSIrAUN.js"
     ]
   },
   "app/immersive-story.tsx": {
-    "file": "_next/static/chunks/immersive-story-Dyt1OnKQ.js",
+    "file": "_next/static/chunks/immersive-story-CR03S6cb.js",
     "name": "immersive-story",
     "src": "app/immersive-story.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_rolldown-runtime-C60lm6uB.js",
+      "_lm-mark-BQ_N6ydp.js",
+      "_framework-BgSIrAUN.js"
+    ]
+  },
+  "app/legal-shell.tsx": {
+    "file": "_next/static/chunks/legal-shell-CNQeCwK9.js",
+    "name": "legal-shell",
+    "src": "app/legal-shell.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_rolldown-runtime-C60lm6uB.js",
+      "_lm-mark-BQ_N6ydp.js",
       "_framework-BgSIrAUN.js"
     ]
   },
   "node_modules/.pnpm/vinext@1.0.0-beta.2_@vitejs_93f6fd6c708956198cb05a5cfe3fd3ab/node_modules/vinext/dist/shims/layout-segment-context.js": {
-    "file": "_next/static/chunks/layout-segment-context-YRYExqyZ.js",
+    "file": "_next/static/chunks/layout-segment-context-RXkgrA8U.js",
     "name": "layout-segment-context",
     "src": "node_modules/.pnpm/vinext@1.0.0-beta.2_@vitejs_93f6fd6c708956198cb05a5cfe3fd3ab/node_modules/vinext/dist/shims/layout-segment-context.js",
     "isDynamicEntry": true,
@@ -43,7 +64,7 @@
     ]
   },
   "virtual:vinext-app-browser-entry": {
-    "file": "_next/static/chunks/index-DPjJEfG4.js",
+    "file": "_next/static/chunks/index-BEkO4gU0.js",
     "name": "index",
     "src": "virtual:vinext-app-browser-entry",
     "isEntry": true,
@@ -55,7 +76,8 @@
       "virtual:vinext-app-browser-entry",
       "app/download/page.tsx",
       "app/immersive-story.tsx",
-      "node_modules/.pnpm/vinext@1.0.0-beta.2_@vitejs_93f6fd6c708956198cb05a5cfe3fd3ab/node_modules/vinext/dist/shims/layout-segment-context.js"
+      "node_modules/.pnpm/vinext@1.0.0-beta.2_@vitejs_93f6fd6c708956198cb05a5cfe3fd3ab/node_modules/vinext/dist/shims/layout-segment-context.js",
+      "app/legal-shell.tsx"
     ]
   }
 }
