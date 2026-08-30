@@ -1,12 +1,12 @@
 {
-  "versionCode": 101371,
-  "versionName": "2.1.371",
+  "versionCode": 101454,
+  "versionName": "2.1.454",
   "apkUrl": "https://github.com/eliasmercury/living-motion-releases/releases/latest/download/LivingMotionCoach-latest.apk",
-  "apkUrlFallback": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101371/LivingMotionCoach-v101371-release.apk",
-  "sha256": "44df8c6c211234877859abd4014479c78b00d8cc9f586952ad7f8b3d2ccd51bd",
-  "changelog": "Можно скачать приложение с livingmotion.ru и обновлять его прямо в Living Motion.\nКаталог, дневник, питание и таймер отдыха упрощены. Фейковые данные убраны.",
+  "apkUrlFallback": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101454/LivingMotionCoach-v101454-release.apk",
+  "sha256": "a33f53ede34828c34450c8fe0537635054e6aaac9bfd5969711deb4ff990171a",
+  "changelog": "Камера следит за силуэтом и расстоянием. Честные тексты про питание, готовность и удаление аккаунта. Программы тренировок на русском и английском.",
   "forceUpdate": false,
   "minVersionCode": 1,
-  "buildDate": "2026-08-29T19:00:00Z",
-  "commitSha": "0056bfa"
+  "buildDate": "2026-08-30T15:15:00Z",
+  "commitSha": "7b9b252"
 }
