@@ -2,14 +2,14 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg-base:     #0D1117;
-  --bg-surface:  #161B22;
-  --bg-elevated: #1C2333;
+  --bg-base:     #07080a;
+  --bg-surface:  #10141c;
+  --bg-elevated: #161b12;
   --border:      rgba(255,255,255,0.08);
   --border-med:  rgba(255,255,255,0.14);
-  --accent:      #5B8AF0;
-  --accent-dim:  rgba(91,138,240,0.15);
-  --accent-glow: rgba(91,138,240,0.30);
+  --accent:      #caff18;
+  --accent-dim:  rgba(202,255,24,0.16);
+  --accent-glow: rgba(202,255,24,0.28);
   --green:       #4CAF50;
   --orange:      #FF9800;
   --red:         #EF5350;
@@ -101,13 +101,13 @@ html, body {
 .nav-btn.active { color: var(--accent); }
 .nav-btn:active { transform: scale(0.9); }
 
-.nav-icon { font-size: 22px; line-height: 1; }
-.nav-label { font-size: 10px; font-weight: 600; letter-spacing: 0.3px; }
+.nav-icon { display: none; }
+.nav-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 
 /* ── Header ──────────────────────────────────────────────────────────── */
 .page-header {
   padding: 56px 20px 20px;
-  background: linear-gradient(180deg, #0D1B2A 0%, var(--bg-base) 100%);
+  background: linear-gradient(180deg, #14180f 0%, var(--bg-base) 100%);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -164,7 +164,7 @@ html, body {
   -webkit-tap-highlight-color: transparent;
 }
 .btn:active { opacity: 0.8; transform: scale(0.97); }
-.btn-primary { background: var(--accent); color: #fff; padding: 14px 20px; font-size: 15px; width: 100%; }
+.btn-primary { background: var(--accent); color: #07080a; padding: 14px 20px; font-size: 15px; width: 100%; }
 .btn-outline {
   background: transparent;
   border: 1px solid var(--border-med);
@@ -585,7 +585,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
 /* ══════════════════════════════════════════════════════════════════════ */
 #install-banner {
   position: fixed; top: 0; left: 0; right: 0; z-index: 400;
-  background: var(--accent); color: #fff;
+  background: var(--accent); color: #07080a;
   padding: 14px 20px;
   display: flex; align-items: center; justify-content: space-between;
   gap: 12px; font-size: 13px; font-weight: 600;
@@ -593,10 +593,11 @@ hr { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
 }
 #install-banner.show { transform: translateY(0); }
 #install-banner button {
-  background: rgba(255,255,255,0.25); border: none; color: #fff;
+  background: #07080a; border: none; color: #caff18;
   padding: 6px 14px; border-radius: var(--radius-pill);
   font-weight: 700; cursor: pointer; font-size: 13px;
 }
+#quote-emoji { display: none; }
 
 /* ── Utilities ───────────────────────────────────────────────────────── */
 .mt-8  { margin-top: 8px; }

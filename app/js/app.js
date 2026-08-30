@@ -281,10 +281,10 @@ function renderDashboard() {
   const gr = h < 12 ? 'Доброе утро' : h < 18 ? 'Добрый день' : 'Добрый вечер';
   const name = S.userName;
 
-  setEl('dash-greeting', name ? `Привет, ${name} 👋` : `${gr} 👋`);
+  setEl('dash-greeting', name ? `Привет, ${name}` : gr);
   setEl('dash-sub', new Date().toLocaleDateString('ru-RU', { weekday:'long', day:'numeric', month:'long' }));
-  setEl('dash-streak', `🔥 ${S.streak} дн.`);
-  setEl('dash-week', `📅 ${S.weekWorkouts}/${S.weekGoal} нед.`);
+  setEl('dash-streak', `${S.streak} дн.`);
+  setEl('dash-week', `${S.weekWorkouts}/${S.weekGoal} нед.`);
   setEl('qs-water', `${(S.waterMl/1000).toFixed(1)}л`);
   setEl('qs-workouts', S.allWorkouts.length);
 
@@ -294,8 +294,8 @@ function renderDashboard() {
 
   // Today card
   const isRest = S.weekWorkouts >= S.weekGoal;
-  setEl('today-status', isRest ? '🛌 День отдыха заслужен!' : '🏋️ Время тренироваться!');
-  setEl('today-sub', `Неделя: ${S.weekWorkouts}/${S.weekGoal}  •  Серия: 🔥 ${S.streak} дн.`);
+  setEl('today-status', isRest ? 'День отдыха' : 'Время тренироваться');
+  setEl('today-sub', `Неделя: ${S.weekWorkouts}/${S.weekGoal}  •  Серия: ${S.streak} дн.`);
 
   // Streak at-risk banner
   const streakBanner = document.getElementById('streak-risk-banner');
@@ -306,7 +306,7 @@ function renderDashboard() {
     if (!trainedToday && h2 >= 15) {
       streakBanner.style.display = '';
       const sb = document.getElementById('streak-risk-text');
-      if (sb) sb.textContent = `Серия ${S.streak} дн. под угрозой! Потренируйся сегодня, чтобы сохранить её 🔥`;
+      if (sb) sb.textContent = `Серия ${S.streak} дн. под угрозой. Потренируйся сегодня, чтобы сохранить её.`;
     } else {
       streakBanner.style.display = 'none';
     }
