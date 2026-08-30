@@ -1063,7 +1063,7 @@ function renderProgress() {
   const ws = S.allWorkouts;
   setEl('prog-total', ws.length);
   setEl('prog-week', ws.filter(w => new Date(w.date) >= getWeekStart()).length);
-  setEl('prog-streak', `${S.streak} 🔥`);
+  setEl('prog-streak', `${S.streak}`);
 
   const lastW = S.bodyStats.filter(s => s.weightKg > 0).at(-1);
   setEl('prog-weight', lastW ? `${lastW.weightKg} кг` : '—');

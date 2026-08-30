@@ -20,7 +20,7 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/app.css?v=50" />
 </head>
 <body>
 
@@ -79,17 +79,17 @@
             <div class="qs-lbl">Вода</div>
           </div>
           <div class="qs-card" onclick="openWeightSheet()">
-            <div class="qs-icon">⚖️</div>
+            <div class="qs-icon"></div>
             <div class="qs-val" id="qs-weight">—</div>
             <div class="qs-lbl">Вес</div>
           </div>
           <div class="qs-card" onclick="switchTab('history')">
-            <div class="qs-icon">🏅</div>
+            <div class="qs-icon"></div>
             <div class="qs-val" id="qs-workouts">0</div>
             <div class="qs-lbl">Тренировок</div>
           </div>
           <div class="qs-card" onclick="switchTab('progress')">
-            <div class="qs-icon">📦</div>
+            <div class="qs-icon"></div>
             <div class="qs-val" id="qs-volume">—</div>
             <div class="qs-lbl">Объём нед.</div>
           </div>
@@ -101,7 +101,7 @@
           <div style="position:relative;flex-shrink:0;width:64px;height:64px">
             <svg width="64" height="64" viewBox="0 0 64 64" style="transform:rotate(-90deg)">
               <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="6"/>
-              <circle id="week-ring" cx="32" cy="32" r="26" fill="none" stroke="var(--teal)" stroke-width="6"
+              <circle id="week-ring" cx="32" cy="32" r="26" fill="none" stroke="var(--accent)" stroke-width="6"
                 stroke-dasharray="163.4" stroke-dashoffset="163.4" stroke-linecap="round"
                 style="transition:stroke-dashoffset .7s cubic-bezier(.4,0,.2,1),stroke .4s"/>
             </svg>
@@ -112,7 +112,7 @@
           </div>
           <div style="flex:1;min-width:0">
             <div class="today-info" style="margin-bottom:6px">
-              <h3 id="today-status" style="margin:0 0 2px 0">🏋️ Время тренироваться!</h3>
+              <h3 id="today-status" style="margin:0 0 2px 0">Время тренироваться</h3>
               <p id="today-sub" style="margin:0">Неделя: 0/4</p>
             </div>
             <div class="week-dots" id="week-dots" style="display:flex;gap:5px;flex-wrap:wrap"></div>
@@ -122,14 +122,14 @@
 
       <!-- ── Streak at-risk banner ─────────────────────────────────────── -->
       <div id="streak-risk-banner" style="display:none;margin-top:10px;background:linear-gradient(135deg,rgba(255,107,107,.15),rgba(255,159,67,.1));border:1px solid rgba(255,107,107,.3);border-radius:14px;padding:12px 14px;display:none;align-items:center;gap:10px" onclick="switchTab('log')">
-        <div style="font-size:24px;flex-shrink:0">⚠️</div>
+        <div style="font-size:12px;flex-shrink:0;color:#caff18;font-weight:800">!</div>
         <div id="streak-risk-text" style="font-size:12px;font-weight:600;color:var(--text-1);line-height:1.4;cursor:pointer"></div>
       </div>
 
       <!-- ── Daily motivational quote ────────────────────────────────── -->
       <div class="section mt-12">
-        <div id="daily-quote-card" style="background:linear-gradient(135deg,rgba(91,138,240,.15),rgba(52,199,89,.08));border:1px solid rgba(91,138,240,.2);border-radius:16px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start">
-          <div style="font-size:26px;flex-shrink:0" id="quote-emoji">✨</div>
+        <div id="daily-quote-card" style="background:linear-gradient(135deg,rgba(202,255,24,.12),rgba(7,8,10,.4));border:1px solid rgba(202,255,24,.22);border-radius:16px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start">
+          <div style="display:none" id="quote-emoji"></div>
           <div>
             <div id="quote-text" style="font-size:13px;font-weight:500;color:var(--text-1);line-height:1.5"></div>
             <div id="quote-author" style="font-size:11px;color:var(--text-2);margin-top:4px"></div>
@@ -139,8 +139,8 @@
 
       <div class="section mt-12">
         <div class="insight-card" id="dash-insight">
-          <div class="insight-icon">💡</div>
-          <div class="insight-text">Начни первую тренировку — сделай шаг к своей цели!</div>
+          <div class="insight-icon"></div>
+          <div class="insight-text">Начни первую тренировку — сделай шаг к своей цели.</div>
         </div>
       </div>
 
@@ -148,7 +148,6 @@
       <div class="section mt-12">
         <div style="display:flex;gap:8px">
           <div class="card" style="flex:1;padding:10px 12px;display:flex;align-items:center;gap:8px;min-width:0">
-            <span style="font-size:18px">💧</span>
             <div style="flex:1;min-width:0">
               <div style="font-size:10px;color:var(--text-3);margin-bottom:2px">Вода</div>
               <div style="height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden">
@@ -158,7 +157,6 @@
             </div>
           </div>
           <div class="card" style="flex:1;padding:10px 12px;display:flex;align-items:center;gap:8px;min-width:0">
-            <span style="font-size:18px">🔥</span>
             <div style="flex:1;min-width:0">
               <div style="font-size:10px;color:var(--text-3);margin-bottom:2px">Калории</div>
               <div style="height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden">
@@ -174,16 +172,16 @@
       <div class="section mt-12">
         <div style="display:flex;gap:8px">
           <button onclick="quickAddWater()" style="flex:1;padding:10px 8px;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.25);border-radius:12px;color:#38bdf8;font-size:12px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px">
-            <span style="font-size:20px">💧</span>+стакан
+            +стакан
           </button>
-          <button onclick="showWeightModal()" style="flex:1;padding:10px 8px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.25);border-radius:12px;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px">
-            <span style="font-size:20px">⚖️</span>Вес
+          <button onclick="showWeightModal()" style="flex:1;padding:10px 8px;background:rgba(202,255,24,.1);border:1px solid rgba(202,255,24,.25);border-radius:12px;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px">
+            Вес
           </button>
-          <button onclick="switchTab('log')" style="flex:1;padding:10px 8px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:12px;color:#22c55e;font-size:12px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px">
-            <span style="font-size:20px">🏋️</span>Старт
+          <button onclick="switchTab('log')" style="flex:1;padding:10px 8px;background:#caff18;border:1px solid #caff18;border-radius:12px;color:#07080a;font-size:12px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px">
+            Старт
           </button>
           <button onclick="switchTab('nutrition')" style="flex:1;padding:10px 8px;background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.25);border-radius:12px;color:#fb923c;font-size:12px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px">
-            <span style="font-size:20px">🥗</span>Еда
+            Еда
           </button>
         </div>
       </div>
@@ -192,7 +190,7 @@
         <div style="font-size:11px;font-weight:700;color:var(--text-2);margin-bottom:6px;letter-spacing:.5px">ПОСЛЕДНЯЯ ТРЕНИРОВКА</div>
         <div class="recent-card" id="recent-workout" style="display:none"></div>
         <div id="no-workouts" class="card" style="text-align:center;color:var(--text-2);font-size:13px;padding:24px">
-          Тренировок пока нет — начни прямо сейчас! 💪
+          Тренировок пока нет — начни прямо сейчас.
         </div>
       </div>
 
@@ -389,7 +387,7 @@
     <!-- ══════════════════ PROGRESS ══════════════════ -->
     <div id="screen-progress" class="screen">
       <div class="page-header">
-        <h1>📊 Прогресс</h1>
+        <h1>Прогресс</h1>
         <p>Твоя статистика и рекорды</p>
       </div>
 
@@ -404,7 +402,7 @@
             <div class="lbl">На этой неделе</div>
           </div>
           <div class="stat-tile">
-            <div class="val" id="prog-streak">0 🔥</div>
+            <div class="val" id="prog-streak">0</div>
             <div class="lbl">Серия дней</div>
           </div>
           <div class="stat-tile">
@@ -708,7 +706,7 @@
     <!-- ══════════════════ NUTRITION ══════════════════ -->
     <div id="screen-nutrition" class="screen">
       <div class="page-header">
-        <h1>🥗 Питание</h1>
+        <h1>Питание</h1>
         <p>Вода и калории на сегодня</p>
       </div>
 
@@ -1359,9 +1357,9 @@
               <div class="settings-row-info"><strong>Напоминания о тренировке</strong><span>Уведомление в 18:00 если нет тренировки</span></div>
               <div class="settings-row-arrow">›</div>
             </div>
-            <div class="settings-row" onclick="window.open('http://176.109.105.81/apk/LivingMotionCoach-latest.apk','_blank')">
-              <div class="settings-row-icon">🤖</div>
-              <div class="settings-row-info"><strong>Android-приложение</strong><span>Полная версия с ИИ-тренером</span></div>
+            <div class="settings-row" onclick="location.href='/download'">
+              <div class="settings-row-icon"></div>
+              <div class="settings-row-info"><strong>Скачать Android</strong><span>APK на livingmotion.ru. PRO 300 ₽ / мес.</span></div>
               <div class="settings-row-arrow">›</div>
             </div>
           </div>
@@ -1471,8 +1469,8 @@
   </div>
 </div>
 
-<script src="js/db.js"></script>
-<script src="js/app.js"></script>
+<script src="js/db.js?v=50"></script>
+<script src="js/app.js?v=50"></script>
 <script>
 window.openWeightSheet = function() {
   // Also wire sheet-weight to body-weight for unified save

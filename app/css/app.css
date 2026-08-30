@@ -264,12 +264,13 @@ hr { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
 /* ══════════════════════════════════════════════════════════════════════ */
 .hero {
   padding: 56px 20px 24px;
-  background: linear-gradient(160deg, #0D1B2A 0%, #1A1F3C 100%);
+  background: linear-gradient(160deg, #14180f 0%, #07080a 100%);
 }
 .hero-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.qs-icon,.insight-icon,.settings-row-icon { display: none; }
 .avatar {
   width: 42px; height: 42px; border-radius: 50%;
-  background: rgba(255,255,255,0.12);
+  background: rgba(202,255,24,0.16);
   display: flex; align-items: center; justify-content: center;
   font-size: 17px; font-weight: 700; color: #fff;
   cursor: pointer;
