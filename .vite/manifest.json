@@ -19,7 +19,7 @@
     "name": "rolldown-runtime"
   },
   "app/download/page.tsx": {
-    "file": "_next/static/chunks/page-BjYLQMI2.js",
+    "file": "_next/static/chunks/page-BHqFjyzV.js",
     "name": "page",
     "src": "app/download/page.tsx",
     "isDynamicEntry": true,
@@ -31,7 +31,7 @@
     ]
   },
   "app/immersive-story.tsx": {
-    "file": "_next/static/chunks/immersive-story-DEqCAGa1.js",
+    "file": "_next/static/chunks/immersive-story-DVy6xYE4.js",
     "name": "immersive-story",
     "src": "app/immersive-story.tsx",
     "isDynamicEntry": true,
@@ -42,7 +42,7 @@
     ]
   },
   "app/legal-shell.tsx": {
-    "file": "_next/static/chunks/legal-shell-CNQeCwK9.js",
+    "file": "_next/static/chunks/legal-shell-fF0vAeAD.js",
     "name": "legal-shell",
     "src": "app/legal-shell.tsx",
     "isDynamicEntry": true,
@@ -52,8 +52,20 @@
       "_framework-BgSIrAUN.js"
     ]
   },
+  "app/not-found.tsx": {
+    "file": "_next/static/chunks/not-found-BygwVCKh.js",
+    "name": "not-found",
+    "src": "app/not-found.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_rolldown-runtime-C60lm6uB.js",
+      "app/immersive-story.tsx",
+      "_lm-mark-BQ_N6ydp.js",
+      "_framework-BgSIrAUN.js"
+    ]
+  },
   "node_modules/.pnpm/vinext@1.0.0-beta.2_@vitejs_93f6fd6c708956198cb05a5cfe3fd3ab/node_modules/vinext/dist/shims/layout-segment-context.js": {
-    "file": "_next/static/chunks/layout-segment-context-CnO_MqvE.js",
+    "file": "_next/static/chunks/layout-segment-context-CqelEbc8.js",
     "name": "layout-segment-context",
     "src": "node_modules/.pnpm/vinext@1.0.0-beta.2_@vitejs_93f6fd6c708956198cb05a5cfe3fd3ab/node_modules/vinext/dist/shims/layout-segment-context.js",
     "isDynamicEntry": true,
@@ -64,7 +76,7 @@
     ]
   },
   "virtual:vinext-app-browser-entry": {
-    "file": "_next/static/chunks/index-UXz7DSNg.js",
+    "file": "_next/static/chunks/index-CTiilo8V.js",
     "name": "index",
     "src": "virtual:vinext-app-browser-entry",
     "isEntry": true,
@@ -77,6 +89,7 @@
       "app/download/page.tsx",
       "app/immersive-story.tsx",
       "node_modules/.pnpm/vinext@1.0.0-beta.2_@vitejs_93f6fd6c708956198cb05a5cfe3fd3ab/node_modules/vinext/dist/shims/layout-segment-context.js",
+      "app/not-found.tsx",
       "app/legal-shell.tsx"
     ]
   }
