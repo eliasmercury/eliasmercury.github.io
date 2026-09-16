@@ -20,7 +20,7 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="css/app.css?v=50" />
+  <link rel="stylesheet" href="css/app.css?v=51" />
 </head>
 <body>
 
@@ -40,8 +40,9 @@
   display:flex;align-items:center;gap:10px;
 ">
   <span>Нажми <strong>«Поделиться»</strong> → <strong>«На экран Домой»</strong></span>
-  <button onclick="this.closest('#ios-hint').style.transform='translateY(100%)'"
-    style="margin-left:auto;background:none;border:none;color:#9aa19a;font-size:22px;cursor:pointer">✕</button>
+  <button type="button" onclick="this.closest('#ios-hint').style.transform='translateY(100%)'"
+    aria-label="Закрыть"
+    style="margin-left:auto;background:none;border:none;color:#9aa19a;cursor:pointer">Закрыть</button>
 </div>
 
 <div id="app">
