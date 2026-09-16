@@ -10,12 +10,19 @@
     button{min-height:40px;padding:8px 12px;border:1px solid #caff1866;border-radius:10px;background:#10140fd4;color:#e8eef2;cursor:pointer}
     button.on{background:#caff18;color:#07080a}
     #meta{position:fixed;left:16px;bottom:16px;color:#9aa19a;font-size:12px}
+    #refs{position:fixed;right:12px;top:12px;display:flex;flex-direction:column;gap:8px;z-index:2}
+    #refs img{width:110px;height:auto;border:1px solid #caff1844;border-radius:10px;background:#000}
     a{color:#caff18}
     canvas{display:block;width:100%;height:100%}
   </style>
 </head>
 <body>
   <div id="ui"></div>
+  <div id="refs">
+    <img src="/models/motion-coach-ref.png" alt="Референс из ChatGPT" />
+    <img src="/models/motion-coach-front.jpg" alt="Анфас" />
+    <img src="/models/motion-coach-side.jpg" alt="Профиль" />
+  </div>
   <div id="meta">Загрузка модели…</div>
   <script type="importmap">
     {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}
