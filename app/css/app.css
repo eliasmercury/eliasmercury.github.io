@@ -167,8 +167,26 @@ html, body {
 .btn:active { opacity: 0.8; transform: scale(0.97); }
 .btn-primary { background: var(--accent); color: #07080a; padding: 14px 20px; font-size: 15px; width: 100%; min-height: 48px; }
 #install-banner { display: flex; align-items: center; gap: 10px; }
-#install-btn { min-height: 44px; min-width: 88px; padding: 8px 14px; border: 0; border-radius: 12px; background: #caff18; color: #07080a; font-weight: 800; cursor: pointer; }
-#ios-hint button { min-height: 44px; min-width: 44px; padding: 8px 12px; font-size: 13px; font-weight: 700; }
+#install-btn,
+#install-banner button {
+  min-height: 44px; min-width: 88px; padding: 8px 14px;
+  border: 0; border-radius: 12px; font-weight: 800; cursor: pointer;
+}
+#ios-hint {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 500;
+  background: #14180f; border-top: 1px solid rgba(202,255,24,.28);
+  padding: 14px 20px calc(14px + env(safe-area-inset-bottom));
+  font-size: 13px; color: #E8EEF2;
+  transform: translateY(100%); transition: transform .3s;
+  display: flex; align-items: center; gap: 10px;
+}
+#ios-hint.show { transform: translateY(0); }
+#ios-hint button {
+  margin-left: auto; flex-shrink: 0;
+  background: none; border: none; color: #9aa19a; cursor: pointer;
+  min-height: 44px; min-width: 44px; padding: 8px 12px;
+  font-size: 13px; font-weight: 700;
+}
 .btn-outline {
   background: transparent;
   border: 1px solid var(--border-med);
@@ -600,8 +618,9 @@ hr { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
 #install-banner.show { transform: translateY(0); }
 #install-banner button {
   background: #07080a; border: none; color: #caff18;
-  padding: 6px 14px; border-radius: var(--radius-pill);
+  padding: 8px 14px; border-radius: var(--radius-pill);
   font-weight: 700; cursor: pointer; font-size: 13px;
+  min-height: 44px; min-width: 88px;
 }
 #quote-emoji { display: none; }
 

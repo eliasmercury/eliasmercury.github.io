@@ -20,7 +20,7 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="css/app.css?v=51" />
+  <link rel="stylesheet" href="css/app.css?v=52" />
 </head>
 <body>
 
@@ -31,18 +31,10 @@
 </div>
 
 <!-- iOS hint -->
-<div id="ios-hint" style="
-  position:fixed;bottom:0;left:0;right:0;z-index:500;
-  background:#14180f;border-top:1px solid rgba(202,255,24,.28);
-  padding:14px 20px calc(14px + env(safe-area-inset-bottom));
-  font-size:13px;color:#E8EEF2;
-  transform:translateY(100%);transition:transform .3s;
-  display:flex;align-items:center;gap:10px;
-">
+<div id="ios-hint">
   <span>Нажми <strong>«Поделиться»</strong> → <strong>«На экран Домой»</strong></span>
-  <button type="button" onclick="this.closest('#ios-hint').style.transform='translateY(100%)'"
-    aria-label="Закрыть"
-    style="margin-left:auto;background:none;border:none;color:#9aa19a;cursor:pointer">Закрыть</button>
+  <button type="button" onclick="this.closest('#ios-hint').classList.remove('show')"
+    aria-label="Закрыть">Закрыть</button>
 </div>
 
 <div id="app">

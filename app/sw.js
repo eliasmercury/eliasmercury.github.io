@@ -1,4 +1,4 @@
-const CACHE = 'lmc-v51';
+const CACHE = 'lmc-v52';
 const ASSETS = [
   '/app/',
   '/app/index.html',
