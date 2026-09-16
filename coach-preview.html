@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Motion Coach — GLB preview</title>
+  <style>
+    html,body{margin:0;height:100%;background:#07080a;color:#e8eef2;font:650 14px/1.4 system-ui,sans-serif}
+    #ui{position:fixed;z-index:2;left:16px;top:16px;right:16px;display:flex;flex-wrap:wrap;gap:8px;max-width:720px}
+    button{min-height:40px;padding:8px 12px;border:1px solid #caff1866;border-radius:10px;background:#10140fd4;color:#e8eef2;cursor:pointer}
+    button.on{background:#caff18;color:#07080a}
+    #meta{position:fixed;left:16px;bottom:16px;color:#9aa19a;font-size:12px}
+    a{color:#caff18}
+    canvas{display:block;width:100%;height:100%}
+  </style>
+</head>
+<body>
+  <div id="ui"></div>
+  <div id="meta">Загрузка модели…</div>
+  <script type="importmap">
+    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}
+  </script>
+  <script type="module">
+    import * as THREE from "three";
+    import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x07080a);
+    const camera = new THREE.PerspectiveCamera(35, innerWidth / innerHeight, 0.1, 40);
+    camera.position.set(1.6, 1.4, 3.4);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+    renderer.setSize(innerWidth, innerHeight);
+    document.body.appendChild(renderer.domElement);
+    scene.add(new THREE.HemisphereLight(0xc8d0c4, 0x1a1e18, 1.1));
+    const key = new THREE.DirectionalLight(0xffffff, 1.4);
+    key.position.set(2, 4, 3);
+    scene.add(key);
+    const fill = new THREE.DirectionalLight(0xcaff18, 0.35);
+    fill.position.set(-3, 1, -2);
+    scene.add(fill);
+    const floor = new THREE.Mesh(new THREE.CircleGeometry(2.2, 40), new THREE.MeshStandardMaterial({ color: 0x11140f, metalness: 0.2, roughness: 0.8 }));
+    floor.rotation.x = -Math.PI / 2;
+    scene.add(floor);
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.set(0, 0.95, 0);
+    controls.update();
+
+    const loader = new GLTFLoader();
+    const gltf = await loader.loadAsync("/models/motion-coach.glb");
+    scene.add(gltf.scene);
+    const mixer = new THREE.AnimationMixer(gltf.scene);
+    const clips = gltf.animations;
+    const ui = document.getElementById("ui");
+    const meta = document.getElementById("meta");
+    meta.textContent = `Кости: ${gltf.scene.getObjectByName("hips") ? "humanoid rig" : "—"} · клипов: ${clips.length} · ${Math.round((await (await fetch("/models/motion-coach.glb")).blob()).size / 1024)} КБ`;
+    let current;
+    function play(name) {
+      const clip = clips.find((c) => c.name === name);
+      if (!clip) return;
+      if (current) current.fadeOut(0.25);
+      current = mixer.clipAction(clip);
+      current.reset().fadeIn(0.25).play();
+      [...ui.children].forEach((b) => b.classList.toggle("on", b.dataset.clip === name));
+    }
+    for (const clip of clips) {
+      const b = document.createElement("button");
+      b.dataset.clip = clip.name;
+      b.textContent = `${clip.name} · ${clip.duration.toFixed(1)}s`;
+      b.onclick = () => play(clip.name);
+      ui.appendChild(b);
+    }
+    const home = document.createElement("a");
+    home.href = "/";
+    home.textContent = "← Сайт";
+    home.style.cssText = "align-self:center;margin-left:8px";
+    ui.appendChild(home);
+    play("idle");
+
+    const clock = new THREE.Clock();
+    function frame() {
+      mixer.update(clock.getDelta());
+      controls.update();
+      renderer.render(scene, camera);
+      requestAnimationFrame(frame);
+    }
+    frame();
+    addEventListener("resize", () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+  </script>
+</body>
+</html>
