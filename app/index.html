@@ -20,14 +20,14 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="css/app.css?v=52" />
+  <link rel="stylesheet" href="css/app.css?v=53" />
 </head>
 <body>
 
 <!-- Install banner (Android) -->
 <div id="install-banner">
   <span>Добавь Living Motion на экран Домой</span>
-  <button id="install-btn">Установить</button>
+  <button type="button" id="install-btn">Установить</button>
 </div>
 
 <!-- iOS hint -->
@@ -54,7 +54,7 @@
           <div class="stat-pill" id="dash-nut-streak" style="display:none">0 дн.</div>
         </div>
         <div class="hero-actions">
-          <button class="btn btn-primary" onclick="switchTab('log')" style="font-size:15px">
+          <button type="button" class="btn btn-primary" onclick="switchTab('log')" style="font-size:15px">
             Записать тренировку
           </button>
           <div class="hero-row">
@@ -114,7 +114,7 @@
       </div>
 
       <!-- ── Streak at-risk banner ─────────────────────────────────────── -->
-      <div id="streak-risk-banner" style="display:none;margin-top:10px;background:linear-gradient(135deg,rgba(255,107,107,.15),rgba(255,159,67,.1));border:1px solid rgba(255,107,107,.3);border-radius:14px;padding:12px 14px;display:none;align-items:center;gap:10px" onclick="switchTab('log')">
+      <div id="streak-risk-banner" class="section" style="display:none;margin-top:10px;background:linear-gradient(135deg,rgba(255,107,107,.15),rgba(255,159,67,.1));border:1px solid rgba(255,107,107,.3);border-radius:14px;padding:12px 14px;align-items:center;gap:10px" onclick="switchTab('log')">
         <div style="font-size:12px;flex-shrink:0;color:#caff18;font-weight:800">!</div>
         <div id="streak-risk-text" style="font-size:12px;font-weight:600;color:var(--text-1);line-height:1.4;cursor:pointer"></div>
       </div>
@@ -191,7 +191,7 @@
       <div class="section mt-12" id="dash-orm-section" style="display:none">
         <div class="card" style="padding:12px 14px">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-            <div style="font-size:11px;font-weight:700;color:var(--text-2);letter-spacing:.5px">🏆 МОИ РЕКОРДЫ (1RM)</div>
+            <div style="font-size:11px;font-weight:700;color:var(--text-2);letter-spacing:.5px">МОИ РЕКОРДЫ (1RM)</div>
             <button onclick="switchTab('progress')" style="background:none;border:none;font-size:11px;color:var(--accent);cursor:pointer;padding:0">Все →</button>
           </div>
           <div id="dash-orm-list" style="display:flex;flex-direction:column;gap:8px"></div>
@@ -222,14 +222,14 @@
       <div class="section mt-12">
         <div style="font-size:11px;font-weight:700;color:var(--text-2);margin-bottom:8px;letter-spacing:.5px">БЫСТРЫЙ СТАРТ</div>
         <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px">
-          <button class="btn btn-primary" onclick="switchTab('templates')" style="white-space:nowrap;width:auto;padding:10px 14px;flex-shrink:0;font-size:13px">
-            💪 Грудь+Трицепс
+          <button type="button" class="btn btn-primary" onclick="switchTab('templates')" style="white-space:nowrap;width:auto;padding:10px 14px;flex-shrink:0;font-size:13px">
+            Грудь+Трицепс
           </button>
-          <button class="btn btn-outline" onclick="switchTab('templates')" style="white-space:nowrap;width:auto;padding:10px 14px;flex-shrink:0;font-size:13px">
-            🦵 Ноги
+          <button type="button" class="btn btn-outline" onclick="switchTab('templates')" style="white-space:nowrap;width:auto;padding:10px 14px;flex-shrink:0;font-size:13px">
+            Ноги
           </button>
-          <button class="btn btn-outline" onclick="switchTab('templates')" style="white-space:nowrap;width:auto;padding:10px 14px;flex-shrink:0;font-size:13px">
-            🔄 Все шаблоны
+          <button type="button" class="btn btn-outline" onclick="switchTab('templates')" style="white-space:nowrap;width:auto;padding:10px 14px;flex-shrink:0;font-size:13px">
+            Все шаблоны
           </button>
         </div>
       </div>
@@ -256,13 +256,21 @@
       <!-- Next muscle recommendation -->
       <div class="section mt-12" id="dash-next-muscle" style="display:none;background:rgba(20,184,166,.08);border-radius:14px;padding:12px 14px;border:1px solid rgba(20,184,166,.2)"></div>
 
-      <!-- AI Coach card -->
+      <div class="section mt-12">
+        <div style="font-size:11px;font-weight:700;color:var(--text-2);margin-bottom:8px;letter-spacing:.5px">ИНСТРУМЕНТЫ</div>
+        <div class="hero-row">
+          <button type="button" class="btn-hero-sec" onclick="switchTab('sleep')">Сон</button>
+          <button type="button" class="btn-hero-sec" onclick="switchTab('tdee')">TDEE</button>
+        </div>
+      </div>
+
+      <!-- Coach card -->
       <div class="section mt-12">
         <div class="card" style="background:linear-gradient(135deg,rgba(91,138,240,.1),rgba(13,17,23,.8));border-color:rgba(91,138,240,.25)">
           <div style="display:flex;gap:12px;align-items:center">
-            <div style="width:44px;height:44px;border-radius:50%;background:rgba(91,138,240,.15);border:1.5px solid rgba(91,138,240,.4);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0" id="ai-coach-icon">🤖</div>
+            <div style="width:44px;height:44px;border-radius:50%;background:rgba(202,255,24,.15);border:1.5px solid rgba(202,255,24,.4);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0" id="ai-coach-icon"></div>
             <div style="flex:1">
-              <div style="font-size:10px;font-weight:700;color:var(--accent);letter-spacing:.5px;margin-bottom:2px">AI ТРЕНЕР</div>
+              <div style="font-size:10px;font-weight:700;color:var(--accent);letter-spacing:.5px;margin-bottom:2px">ТРЕНЕР</div>
               <div style="font-size:14px;font-weight:700;color:var(--text-1)" id="ai-coach-title">Готов к тренировке?</div>
               <div style="font-size:12px;color:var(--text-2);margin-top:2px;line-height:1.5" id="ai-coach-msg">Начни свою первую тренировку и получи персональные рекомендации!</div>
             </div>
@@ -274,10 +282,9 @@
       <div class="section mt-12" style="padding-bottom:4px">
         <div class="card" style="background:rgba(91,138,240,.07);border-color:rgba(91,138,240,.2)">
           <div style="display:flex;gap:12px;align-items:flex-start">
-            <span style="font-size:22px">✨</span>
             <div>
               <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:4px;letter-spacing:.5px">СОВЕТ ДНЯ</div>
-              <div style="font-size:13px;color:var(--text-2);line-height:1.55" id="tip-of-day">Каждое повторение — инвестиция в себя. 💪</div>
+              <div style="font-size:13px;color:var(--text-2);line-height:1.55" id="tip-of-day">Каждое повторение — инвестиция в себя.</div>
             </div>
           </div>
         </div>
@@ -287,7 +294,7 @@
     <!-- ══════════════════ QUICK LOG ══════════════════ -->
     <div id="screen-log" class="screen">
       <div class="page-header">
-        <h1>📝 Тренировка</h1>
+        <h1>Тренировка</h1>
         <p>Выбери упражнение и записывай подходы</p>
       </div>
 
@@ -306,7 +313,6 @@
             ‹ Выбрать другое
           </button>
           <div style="display:flex;align-items:center;gap:6px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:5px 10px">
-            <span style="font-size:13px">⏱</span>
             <span style="font-size:13px;font-weight:700;color:var(--teal);font-variant-numeric:tabular-nums" id="session-elapsed">0:00</span>
           </div>
         </div>
@@ -346,7 +352,7 @@
               </div>
             </div>
             <div style="flex:1">
-              <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:6px">⏱ Время отдыха</div>
+              <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:6px">Время отдыха</div>
               <div class="progress-track" style="height:4px;margin-bottom:8px">
                 <div id="rest-bar-fill" class="progress-fill" style="width:100%;background:var(--teal);transition:width 1s linear,background .5s"></div>
               </div>
@@ -373,7 +379,7 @@
             style="width:100%;box-sizing:border-box;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;color:var(--text-1);font-size:13px;font-family:inherit;resize:none;min-height:60px;outline:none;transition:border .2s"
             onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
         </div>
-        <button class="btn btn-primary" onclick="finishWorkout()">✅ Завершить тренировку</button>
+        <button type="button" class="btn btn-primary" onclick="finishWorkout()">Завершить тренировку</button>
       </div>
     </div>
 
@@ -666,7 +672,7 @@
       <div style="display:flex;gap:6px;margin:0 0 10px;padding:0 2px;overflow-x:auto;scrollbar-width:none">
         <button id="hist-chip-all"  onclick="setHistoryFilter('all')"  class="chip chip-active">Всё</button>
         <button id="hist-chip-week" onclick="setHistoryFilter('week')" class="chip">Эта нед.</button>
-        <button id="hist-chip-month"onclick="setHistoryFilter('month')"class="chip">Этот мес.</button>
+        <button id="hist-chip-month" onclick="setHistoryFilter('month')" class="chip">Этот мес.</button>
         <button id="hist-chip-3m"   onclick="setHistoryFilter('3m')"   class="chip">3 мес.</button>
       </div>
       <div id="history-stats" style="display:flex;gap:8px;margin:0 0 12px;padding:0 2px"></div>
@@ -842,8 +848,8 @@
     <!-- ══════════════════ MORE (Ещё) ══════════════════ -->
     <div id="screen-more" class="screen">
       <div class="page-header">
-        <h1>⚙️ Ещё</h1>
-        <p>Инструменты и трекеры</p>
+        <h1>Ещё</h1>
+        <p>Инструменты. Сон и TDEE — с главной.</p>
       </div>
       <div class="section">
         <div class="card" style="padding:0;overflow:hidden">
@@ -873,11 +879,6 @@
               <div class="settings-row-info"><strong>Калькулятор TDEE / ИМТ</strong><span>Суточная норма калорий</span></div>
               <div class="settings-row-arrow">›</div>
             </div>
-            <div class="settings-row" onclick="switchTab('habits')">
-              <div class="settings-row-icon">✅</div>
-              <div class="settings-row-info"><strong>Привычки</strong><span>Ежедневные привычки</span></div>
-              <div class="settings-row-arrow">›</div>
-            </div>
             <div class="settings-row" onclick="switchTab('stretching')">
               <div class="settings-row-icon">🧘</div>
               <div class="settings-row-info"><strong>Растяжка</strong><span>Заминка после тренировки</span></div>
@@ -896,8 +897,8 @@
     <!-- ══════════════════ TEMPLATES ══════════════════ -->
     <div id="screen-templates" class="screen">
       <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-end">
-        <div><h1>📋 Шаблоны</h1><p>Готовые программы тренировок</p></div>
-        <button class="btn btn-outline btn-sm" onclick="switchTab('more')" style="margin-bottom:4px">‹ Назад</button>
+        <div><h1>Шаблоны</h1><p>Готовые программы тренировок</p></div>
+        <button type="button" class="btn btn-outline btn-sm" onclick="switchTab('dashboard')" style="margin-bottom:4px">‹ Назад</button>
       </div>
       <div style="display:flex;gap:6px;padding:0 16px 10px;overflow-x:auto;scrollbar-width:none">
         <button id="tpl-chip-all"   onclick="filterTemplates('all')"   class="chip chip-active">Все</button>
@@ -913,8 +914,8 @@
     <!-- ══════════════════ SLEEP ══════════════════ -->
     <div id="screen-sleep" class="screen">
       <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-end">
-        <div><h1>🌙 Сон</h1><p>Трекер качества сна</p></div>
-        <button class="btn btn-outline btn-sm" onclick="switchTab('more')" style="margin-bottom:4px">‹ Назад</button>
+        <div><h1>Сон</h1><p>Трекер качества сна</p></div>
+        <button type="button" class="btn btn-outline btn-sm" onclick="switchTab('dashboard')" style="margin-bottom:4px">‹ Назад</button>
       </div>
       <div class="section">
         <!-- Today summary -->
@@ -970,8 +971,8 @@
         </div>
 
         <!-- Add button -->
-        <button class="btn btn-primary" onclick="document.getElementById('sleep-log-sheet').classList.add('open')">
-          🌙 Записать сон
+        <button type="button" class="btn btn-primary" onclick="document.getElementById('sleep-log-sheet').classList.add('open')">
+          Записать сон
         </button>
 
         <!-- Legend -->
@@ -989,8 +990,8 @@
     <!-- ══════════════════ MEASUREMENTS ══════════════════ -->
     <div id="screen-measurements" class="screen">
       <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-end">
-        <div><h1>📏 Замеры</h1><p>Антропометрия тела</p></div>
-        <button class="btn btn-outline btn-sm" onclick="switchTab('more')" style="margin-bottom:4px">‹ Назад</button>
+        <div><h1>Замеры</h1><p>Антропометрия тела</p></div>
+        <button type="button" class="btn btn-outline btn-sm" onclick="switchTab('profile')" style="margin-bottom:4px">‹ Назад</button>
       </div>
       <div class="section">
         <!-- Trend chart -->
@@ -1028,8 +1029,8 @@
     <!-- ══════════════════ ACHIEVEMENTS ══════════════════ -->
     <div id="screen-achievements" class="screen">
       <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-end">
-        <div><h1>🏆 Достижения</h1><p>Значки и награды</p></div>
-        <button class="btn btn-outline btn-sm" onclick="switchTab('more')" style="margin-bottom:4px">‹ Назад</button>
+        <div><h1>Достижения</h1><p>Значки и награды</p></div>
+        <button type="button" class="btn btn-outline btn-sm" onclick="switchTab('profile')" style="margin-bottom:4px">‹ Назад</button>
       </div>
       <div class="section">
         <div id="achievements-list"></div>
@@ -1039,8 +1040,8 @@
     <!-- ══════════════════ TDEE ══════════════════ -->
     <div id="screen-tdee" class="screen">
       <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-end">
-        <div><h1>🔥 TDEE / ИМТ</h1><p>Суточная норма калорий</p></div>
-        <button class="btn btn-outline btn-sm" onclick="switchTab('more')" style="margin-bottom:4px">‹ Назад</button>
+        <div><h1>TDEE / ИМТ</h1><p>Суточная норма калорий. Слайдеры — стартовые цифры, не замер.</p></div>
+        <button type="button" class="btn btn-outline btn-sm" onclick="switchTab('dashboard')" style="margin-bottom:4px">‹ Назад</button>
       </div>
       <div class="section">
         <div class="card">
@@ -1124,8 +1125,8 @@
     <!-- ══════════════════ STRETCHING ══════════════════ -->
     <div id="screen-stretching" class="screen">
       <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-end">
-        <div><h1>🧘 Растяжка</h1><p>Заминка после тренировки</p></div>
-        <button class="btn btn-outline btn-sm" onclick="switchTab('more')" style="margin-bottom:4px">‹ Назад</button>
+        <div><h1>Растяжка</h1><p>Заминка после тренировки</p></div>
+        <button type="button" class="btn btn-outline btn-sm" onclick="switchTab('profile')" style="margin-bottom:4px">‹ Назад</button>
       </div>
 
       <div id="stretch-done-block" style="display:none" class="section mt-12">
@@ -1135,7 +1136,7 @@
           <div style="font-size:13px;color:var(--text-2);margin-bottom:16px">9 упражнений · ~7 минут</div>
           <div style="display:flex;gap:10px">
             <button class="btn btn-outline" style="flex:1" onclick="stretchRestart()">🔄 Повторить</button>
-            <button class="btn btn-primary" style="flex:1" onclick="switchTab('more')">Готово ✓</button>
+            <button type="button" class="btn btn-primary" style="flex:1" onclick="switchTab('profile')">Готово</button>
           </div>
         </div>
       </div>
@@ -1336,23 +1337,43 @@
         <div class="card" style="padding:0;overflow:hidden">
           <div class="settings-list">
             <div class="settings-row" onclick="switchTab('history')">
-              <div class="settings-row-icon">🕐</div>
+              <div class="settings-row-icon"></div>
               <div class="settings-row-info"><strong>История тренировок</strong><span>Все прошлые сессии</span></div>
               <div class="settings-row-arrow">›</div>
             </div>
             <div class="settings-row" onclick="switchTab('progress')">
-              <div class="settings-row-icon">📊</div>
+              <div class="settings-row-icon"></div>
               <div class="settings-row-info"><strong>Прогресс и рекорды</strong><span>Графики и статистика</span></div>
               <div class="settings-row-arrow">›</div>
             </div>
+            <div class="settings-row" onclick="switchTab('templates')">
+              <div class="settings-row-icon"></div>
+              <div class="settings-row-info"><strong>Шаблоны тренировок</strong><span>Готовые программы на день</span></div>
+              <div class="settings-row-arrow">›</div>
+            </div>
+            <div class="settings-row" onclick="switchTab('measurements')">
+              <div class="settings-row-icon"></div>
+              <div class="settings-row-info"><strong>Замеры тела</strong><span>Грудь, талия, бёдра, бицепс</span></div>
+              <div class="settings-row-arrow">›</div>
+            </div>
+            <div class="settings-row" onclick="switchTab('achievements')">
+              <div class="settings-row-icon"></div>
+              <div class="settings-row-info"><strong>Достижения</strong><span>Значки из записанных тренировок</span></div>
+              <div class="settings-row-arrow">›</div>
+            </div>
+            <div class="settings-row" onclick="switchTab('stretching')">
+              <div class="settings-row-icon"></div>
+              <div class="settings-row-info"><strong>Растяжка</strong><span>Заминка после тренировки</span></div>
+              <div class="settings-row-arrow">›</div>
+            </div>
             <div class="settings-row" onclick="requestNotifications()">
-              <div class="settings-row-icon">🔔</div>
+              <div class="settings-row-icon"></div>
               <div class="settings-row-info"><strong>Напоминания о тренировке</strong><span>Уведомление в 18:00 если нет тренировки</span></div>
               <div class="settings-row-arrow">›</div>
             </div>
             <div class="settings-row" onclick="location.href='/download'">
               <div class="settings-row-icon"></div>
-              <div class="settings-row-info"><strong>Скачать Android</strong><span>APK на livingmotion.ru. PRO 300 ₽ / мес.</span></div>
+              <div class="settings-row-info"><strong>Скачать Android</strong><span>APK на livingmotion.ru. PRO 300 ₽ / мес · 2 490 ₽ / год.</span></div>
               <div class="settings-row-arrow">›</div>
             </div>
           </div>
@@ -1363,21 +1384,21 @@
   </div><!-- /screens -->
 
   <!-- ── Bottom Nav ────────────────────────────────── -->
-  <nav class="bottom-nav">
-    <button class="nav-btn active" data-tab="dashboard">
+  <nav class="bottom-nav" aria-label="Разделы">
+    <button type="button" class="nav-btn active" data-tab="dashboard">
       <div class="nav-icon"></div><div class="nav-label">Главная</div>
     </button>
-    <button class="nav-btn" data-tab="log">
-      <div class="nav-icon"></div><div class="nav-label">Лог</div>
-    </button>
-    <button class="nav-btn" data-tab="history">
-      <div class="nav-icon"></div><div class="nav-label">История</div>
-    </button>
-    <button class="nav-btn" data-tab="nutrition">
+    <button type="button" class="nav-btn" data-tab="nutrition">
       <div class="nav-icon"></div><div class="nav-label">Питание</div>
     </button>
-    <button class="nav-btn" data-tab="more">
-      <div class="nav-icon"></div><div class="nav-label">Ещё</div>
+    <button type="button" class="nav-btn" data-tab="log">
+      <div class="nav-icon"></div><div class="nav-label">Упражнения</div>
+    </button>
+    <button type="button" class="nav-btn" data-tab="progress">
+      <div class="nav-icon"></div><div class="nav-label">Прогресс</div>
+    </button>
+    <button type="button" class="nav-btn" data-tab="profile">
+      <div class="nav-icon"></div><div class="nav-label">Профиль</div>
     </button>
   </nav>
 </div>
@@ -1443,6 +1464,7 @@
     <div class="sheet-handle"></div>
     <div class="sheet-title" id="detail-title">Тренировка</div>
     <div style="font-size:12px;color:var(--text-2);margin-bottom:8px" id="detail-date"></div>
+    <div id="detail-note" style="display:none;font-size:13px;color:var(--text-2);margin-bottom:8px"></div>
     <div style="margin-bottom:10px">
       <textarea id="detail-note-input" placeholder="📝 Заметка к тренировке..." rows="2"
         style="width:100%;box-sizing:border-box;background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--text-1);font-family:inherit;resize:none;outline:none;transition:border .2s"
@@ -1455,10 +1477,39 @@
       <div>#</div><div>Вес</div><div>Повт.</div><div>Объём</div><div></div>
     </div>
     <div id="detail-sets"></div>
-    <button class="btn" id="detail-delete-btn" onclick="deleteWorkoutFromDetail()"
+    <button type="button" class="btn" id="detail-delete-btn" onclick="deleteWorkoutFromDetail()"
       style="margin-top:16px;width:100%;background:rgba(255,59,48,.1);border:1px solid rgba(255,59,48,.3);color:#FF3B30;font-weight:600;border-radius:12px;padding:12px">
-      🗑 Удалить тренировку
+      Удалить тренировку
     </button>
+  </div>
+</div>
+
+<div class="overlay" id="sleep-log-sheet" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="sheet" role="dialog" aria-labelledby="sleep-sheet-title">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="sleep-sheet-title">Записать сон</div>
+    <label for="sleep-input-hours">Часы сна</label>
+    <input id="sleep-input-hours" type="number" inputmode="decimal" min="1" max="14" step="0.5" placeholder="7.5" />
+    <label for="sleep-quality-select" style="margin-top:12px">Качество</label>
+    <select id="sleep-quality-select">
+      <option value="great">Отлично</option>
+      <option value="good" selected>Хорошо</option>
+      <option value="ok">Норм</option>
+      <option value="bad">Плохо</option>
+      <option value="awful">Ужасно</option>
+    </select>
+    <button type="button" class="btn btn-primary mt-12" onclick="logSleep()">Сохранить</button>
+    <button type="button" class="btn btn-outline mt-8" onclick="this.closest('.overlay').classList.remove('open')">Закрыть</button>
+  </div>
+</div>
+
+<div class="overlay" id="template-sheet" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="sheet" role="dialog" aria-labelledby="tmpl-name">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="tmpl-name">Шаблон</div>
+    <div id="tmpl-exercises"></div>
+    <button type="button" class="btn btn-primary mt-12" onclick="beginTemplate()">Записать тренировку</button>
+    <button type="button" class="btn btn-outline mt-8" onclick="this.closest('.overlay').classList.remove('open')">Закрыть</button>
   </div>
 </div>
 

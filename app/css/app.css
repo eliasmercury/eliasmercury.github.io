@@ -34,6 +34,8 @@ html, body {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   overflow: hidden;
+  color-scheme: dark;
+  touch-action: manipulation;
 }
 
 /* ── App Shell ───────────────────────────────────────────────────────── */
@@ -103,6 +105,7 @@ html, body {
 .nav-btn:active { transform: scale(0.9); }
 
 .nav-icon { display: none; }
+#log-ex-emoji, #ai-coach-icon, #quote-emoji { display: none; }
 .nav-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 
 /* ── Header ──────────────────────────────────────────────────────────── */
@@ -163,15 +166,10 @@ html, body {
   border: none; cursor: pointer; font-weight: 600; border-radius: var(--radius-md);
   transition: opacity 0.15s, transform 0.12s;
   -webkit-tap-highlight-color: transparent;
+  min-height: 44px;
 }
 .btn:active { opacity: 0.8; transform: scale(0.97); }
 .btn-primary { background: var(--accent); color: #07080a; padding: 14px 20px; font-size: 15px; width: 100%; min-height: 48px; }
-#install-banner { display: flex; align-items: center; gap: 10px; }
-#install-btn,
-#install-banner button {
-  min-height: 44px; min-width: 88px; padding: 8px 14px;
-  border: 0; border-radius: 12px; font-weight: 800; cursor: pointer;
-}
 #ios-hint {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 500;
   background: #14180f; border-top: 1px solid rgba(202,255,24,.28);
@@ -192,8 +190,9 @@ html, body {
   border: 1px solid var(--border-med);
   color: var(--text-1);
   padding: 12px 20px; font-size: 14px;
+  min-height: 44px;
 }
-.btn-sm { padding: 8px 14px; font-size: 13px; border-radius: var(--radius-sm); }
+.btn-sm { padding: 8px 14px; font-size: 13px; border-radius: var(--radius-sm); min-height: 44px; min-width: 44px; }
 .btn-icon {
   background: var(--bg-elevated);
   border: 1px solid var(--border);
@@ -248,8 +247,10 @@ hr { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
 .sheet {
   background: var(--bg-surface);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  padding: 12px 20px 32px;
+  padding: 12px 20px calc(32px + env(safe-area-inset-bottom, 0px));
   width: 100%;
+  max-height: 88dvh;
+  overflow-y: auto;
   transform: translateY(100%);
   transition: transform 0.3s cubic-bezier(.4,0,.2,1);
 }
@@ -324,13 +325,14 @@ hr { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
 
 /* Quick stats row */
 .quick-stats {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px;
 }
 .qs-card {
   background: var(--bg-surface); border: 1px solid var(--border);
   border-radius: var(--radius-md); padding: 12px;
   display: flex; flex-direction: column; align-items: center; gap: 4px;
   cursor: pointer;
+  min-height: 44px;
 }
 .qs-icon { font-size: 20px; }
 .qs-val { font-size: 17px; font-weight: 700; color: var(--text-1); }
@@ -357,8 +359,8 @@ hr { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
   display: flex; align-items: center; gap: 12px;
   padding: 12px 14px;
   border-radius: var(--radius-lg);
-  background: rgba(91,138,240,0.07);
-  border: 1px solid rgba(91,138,240,0.2);
+  background: rgba(202,255,24,0.07);
+  border: 1px solid rgba(202,255,24,0.2);
 }
 .insight-icon { font-size: 22px; }
 .insight-text { font-size: 13px; color: var(--text-2); line-height: 1.5; flex: 1; }
@@ -529,10 +531,11 @@ hr { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
   display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
 }
 .add-water-btn {
-  padding: 9px 14px; border-radius: var(--radius-pill);
+  padding: 10px 14px; border-radius: var(--radius-pill);
   background: var(--bg-elevated); border: 1px solid var(--border);
   font-size: 13px; font-weight: 600; color: var(--teal);
   cursor: pointer; transition: all 0.15s; -webkit-tap-highlight-color: transparent;
+  min-height: 44px; min-width: 44px;
 }
 .add-water-btn:active { transform: scale(0.93); }
 
@@ -562,7 +565,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
 /* ══════════════════════════════════════════════════════════════════════ */
 .profile-hero {
   padding: 56px 20px 24px;
-  background: linear-gradient(160deg,#0D1B2A 0%,var(--bg-base) 100%);
+  background: linear-gradient(160deg, #14180f 0%, var(--bg-base) 100%);
   display: flex; flex-direction: column; align-items: center; gap: 10px;
 }
 .profile-avatar {
@@ -580,6 +583,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
   padding: 14px 16px; border-bottom: 1px solid var(--border);
   cursor: pointer; -webkit-tap-highlight-color: transparent;
   transition: background 0.15s;
+  min-height: 44px;
 }
 .settings-row:active { background: var(--bg-elevated); }
 .settings-row:last-child { border-bottom: none; }
@@ -742,11 +746,49 @@ hr { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
 
 /* ── Filter chips ────────────────────────────────────────────────────── */
 .chip {
-  flex-shrink: 0; padding: 6px 14px; border-radius: 20px; font-size: 12px;
+  flex-shrink: 0; padding: 10px 14px; border-radius: 20px; font-size: 12px;
   font-weight: 600; border: 1px solid var(--border); background: var(--bg-elevated);
   color: var(--text-2); cursor: pointer; transition: background .18s, color .18s, border-color .18s;
   white-space: nowrap;
+  min-height: 44px;
+  display: inline-flex; align-items: center; justify-content: center;
 }
 .chip-active {
-  background: rgba(79,195,247,0.15); color: var(--teal); border-color: var(--teal);
+  background: var(--accent-dim); color: var(--accent); border-color: var(--accent);
+}
+
+.ex-chip { min-height: 44px; display: inline-flex; align-items: center; }
+.ex-item { min-height: 44px; }
+.period-tab { min-height: 44px; }
+.history-row { min-height: 44px; }
+.btn-icon, .btn-del {
+  min-width: 44px; min-height: 44px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.rest-preset-btn { min-height: 44px; min-width: 44px; padding: 8px 12px; }
+
+.template-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  min-height: 44px;
+}
+.template-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+@media (max-width: 360px) {
+  .quick-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+#screen-dashboard .hero-actions .btn,
+#screen-dashboard .hero-row button,
+#ios-hint button,
+#install-btn {
+  min-height: 44px;
 }

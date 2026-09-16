@@ -1,10 +1,13 @@
-const CACHE = 'lmc-v52';
+const CACHE = 'lmc-v53';
 const ASSETS = [
   '/app/',
   '/app/index.html',
   '/app/css/app.css',
+  '/app/css/app.css?v=53',
   '/app/js/db.js',
+  '/app/js/db.js?v=50',
   '/app/js/app.js',
+  '/app/js/app.js?v=50',
   '/app/manifest.json',
   '/app/icons/icon-192.png',
   '/app/icons/icon-512.png',
@@ -22,23 +25,46 @@ self.addEventListener('activate', e => {
   self.clients.claim();
 });
 
+function sameOrigin(url) {
+  try { return new URL(url, self.location.origin).origin === self.location.origin; }
+  catch { return false; }
+}
+
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
-  e.respondWith(
-    caches.match(e.request).then(cached => {
-      const net = fetch(e.request).then(res => {
-        if (res && res.status === 200) {
-          const clone = res.clone();
-          caches.open(CACHE).then(c => c.put(e.request, clone));
-        }
+  if (!sameOrigin(e.request.url)) return;
+  const url = new URL(e.request.url);
+  const isNav = e.request.mode === 'navigate'
+    || url.pathname === '/app/'
+    || url.pathname.endsWith('.html');
+
+  e.respondWith((async () => {
+    const cache = await caches.open(CACHE);
+    const cached = await cache.match(e.request)
+      || await cache.match(url.pathname)
+      || await cache.match(url.pathname + url.search);
+
+    if (isNav) {
+      try {
+        const res = await fetch(e.request);
+        if (res && res.status === 200) cache.put(e.request, res.clone());
         return res;
-      }).catch(() => cached);
-      return cached || net;
-    })
-  );
+      } catch {
+        return cached || new Response('Living Motion offline', {
+          status: 503,
+          headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+        });
+      }
+    }
+
+    const net = fetch(e.request).then(res => {
+      if (res && res.status === 200) cache.put(e.request, res.clone());
+      return res;
+    }).catch(() => cached);
+    return cached || net;
+  })());
 });
 
-// ── Push notifications (local reminders) ────────────────────────────────────
 self.addEventListener('notificationclick', e => {
   e.notification.close();
   e.waitUntil(
@@ -52,10 +78,8 @@ self.addEventListener('notificationclick', e => {
   );
 });
 
-// ── Background sync (when back online) ──────────────────────────────────────
 self.addEventListener('sync', e => {
   if (e.tag === 'sync-workouts') {
-    // Future: sync offline workouts to backend
     console.log('[SW] Background sync: sync-workouts');
   }
 });
