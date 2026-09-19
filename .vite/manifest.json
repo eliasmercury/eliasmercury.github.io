@@ -33,7 +33,7 @@
     "name": "version"
   },
   "app/balanced-landing.tsx": {
-    "file": "_next/static/chunks/balanced-landing-DjUyEsLN.js",
+    "file": "_next/static/chunks/balanced-landing-nJwiHm8Z.js",
     "name": "balanced-landing",
     "src": "app/balanced-landing.tsx",
     "isDynamicEntry": true,
@@ -44,7 +44,7 @@
       "_version-BaXXNt4I.js"
     ],
     "css": [
-      "_next/static/css/balanced-landing.Nr2H8UTC.css"
+      "_next/static/css/balanced-landing.BimuT9Tz.css"
     ]
   },
   "app/download/page.tsx": {
@@ -84,7 +84,7 @@
     ]
   },
   "node_modules/vinext/dist/shims/layout-segment-context.js": {
-    "file": "_next/static/chunks/layout-segment-context-BcC9d-Yf.js",
+    "file": "_next/static/chunks/layout-segment-context-V2p1N_Fi.js",
     "name": "layout-segment-context",
     "src": "node_modules/vinext/dist/shims/layout-segment-context.js",
     "isDynamicEntry": true,
@@ -95,7 +95,7 @@
     ]
   },
   "virtual:vinext-app-browser-entry": {
-    "file": "_next/static/chunks/index-DGiCIrrB.js",
+    "file": "_next/static/chunks/index-CoKyJtij.js",
     "name": "index",
     "src": "virtual:vinext-app-browser-entry",
     "isEntry": true,
