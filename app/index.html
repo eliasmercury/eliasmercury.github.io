@@ -270,9 +270,9 @@
           <div style="display:flex;gap:12px;align-items:center">
             <div style="width:44px;height:44px;border-radius:50%;background:rgba(202,255,24,.15);border:1.5px solid rgba(202,255,24,.4);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0" id="ai-coach-icon"></div>
             <div style="flex:1">
-              <div style="font-size:10px;font-weight:700;color:var(--accent);letter-spacing:.5px;margin-bottom:2px">ТРЕНЕР</div>
+              <div style="font-size:10px;font-weight:700;color:var(--accent);letter-spacing:.5px;margin-bottom:2px">ЦЕЛЬ НА НЕДЕЛЮ</div>
               <div style="font-size:14px;font-weight:700;color:var(--text-1)" id="ai-coach-title">Готов к тренировке?</div>
-              <div style="font-size:12px;color:var(--text-2);margin-top:2px;line-height:1.5" id="ai-coach-msg">Начни свою первую тренировку и получи персональные рекомендации!</div>
+              <div style="font-size:12px;color:var(--text-2);margin-top:2px;line-height:1.5" id="ai-coach-msg">Запиши тренировку, чтобы увидеть, сколько занятий осталось до цели.</div>
             </div>
             <span style="color:var(--text-3);font-size:18px" onclick="switchTab('log')">›</span>
           </div>
@@ -1513,8 +1513,8 @@
   </div>
 </div>
 
-<script src="js/db.js?v=50"></script>
-<script src="js/app.js?v=50"></script>
+<script src="js/db.js?v=54"></script>
+<script src="js/app.js?v=54"></script>
 <script>
 window.openWeightSheet = function() {
   // Also wire sheet-weight to body-weight for unified save
@@ -1523,17 +1523,22 @@ window.openWeightSheet = function() {
   if (sw && bw) {
     sw.oninput = () => { bw.value = sw.value; };
   }
-  document.getElementById('weight-sheet').classList.add('open');
+  const sheet = document.getElementById('weight-sheet');
+  if (!sheet) return;
+  sheet.classList.add('open');
   setTimeout(() => document.getElementById('sheet-weight')?.focus(), 300);
 };
 
 window.openAddFood = () => {
-  document.getElementById('add-food-sheet').classList.add('open');
+  const sheet = document.getElementById('add-food-sheet');
+  if (!sheet) return;
+  sheet.classList.add('open');
   setTimeout(() => document.getElementById('food-select')?.focus(), 300);
 };
 
 window.setQty = v => {
   const q = document.getElementById('food-qty');
+  if (!q) return;
   q.value = v;
   q.dispatchEvent(new Event('input'));
 };

@@ -4,7 +4,7 @@
   "apkUrl": "https://github.com/eliasmercury/living-motion-releases/releases/latest/download/LivingMotionCoach-latest.apk",
   "apkUrlFallback": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101454/LivingMotionCoach-v101454-release.apk",
   "sha256": "e44e3ae3d4aba4445303f152cf0e4f6ca02e6c7458313e5d74bbf49a531b21e7",
-  "changelog": "Камера следит за силуэтом и расстоянием. Честные тексты про питание, готовность и удаление аккаунта. Программы тренировок на русском и английском.",
+  "changelog": "План тренировок, дневник подходов и каталог упражнений на русском и английском. Питание со сканером штрихкодов, учётом воды и журналом добавок. Управление данными и удаление аккаунта в приложении.",
   "forceUpdate": false,
   "minVersionCode": 1,
   "buildDate": "2026-09-20T00:30:00Z",

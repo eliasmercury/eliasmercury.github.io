@@ -32,15 +32,18 @@ function renderDailyQuote() {
 }
 
 // ── State ─────────────────────────────────────────────────────────────────────
+function stored(key) {
+  try { return localStorage.getItem(key); } catch (e) { return null; }
+}
 const S = {
   tab:          'dashboard',
-  userName:     localStorage.getItem('lmc_name')   || '',
-  weekGoal:     +localStorage.getItem('lmc_wg')    || 4,
-  waterGoalMl:  +localStorage.getItem('lmc_wg_ml') || 2500,
-  kcalGoal:     +localStorage.getItem('lmc_kcal_goal') || 2000,
-  heightCm:     +localStorage.getItem('lmc_height')    || 0,
+  userName:     stored('lmc_name')   || '',
+  weekGoal:     +stored('lmc_wg')    || 4,
+  waterGoalMl:  +stored('lmc_wg_ml') || 2500,
+  kcalGoal:     +stored('lmc_kcal_goal') || 2000,
+  heightCm:     +stored('lmc_height')    || 0,
   waterMl:      0,
-  streak:       +localStorage.getItem('lmc_streak')|| 0,
+  streak:       +stored('lmc_streak')|| 0,
   weekWorkouts: 0,
   allWorkouts:  [],
   bodyStats:    [],
@@ -169,6 +172,9 @@ async function init() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/app/sw.js').catch(() => {});
   }
+  // Wire tabs before any render or IndexedDB wait. A throw or a hung
+  // database must not leave the five tabs dead.
+  setupNav();
 
   // Pre-fill profile inputs from saved values
   const nameInput = document.getElementById('prof-name');
@@ -180,23 +186,23 @@ async function init() {
   const heightInput = document.getElementById('prof-height');
   if (heightInput && S.heightCm) heightInput.value = S.heightCm;
   const twInput = document.getElementById('prof-target-weight');
-  const savedTw = +localStorage.getItem('lmc_target_weight') || 0;
+  const savedTw = +stored('lmc_target_weight') || 0;
   if (twInput && savedTw) twInput.value = savedTw;
 
-  // Load data
-  await Promise.all([
-    loadWater(),
-    loadWorkouts(),
-    loadBodyStats(),
-    loadNutrition(),
-  ]);
+  // Load data. Each loader already catches; a hang is bounded in openDB.
+  try {
+    await Promise.all([
+      loadWater(),
+      loadWorkouts(),
+      loadBodyStats(),
+      loadNutrition(),
+    ]);
+  } catch (e) {}
 
-  // Render all screens
-  renderDashboard();
-  renderProgress();
-  renderNutrition();
-  renderProfile();
-  renderHistory();
+  // Render all screens. One broken screen must not skip the rest.
+  for (const draw of [renderDashboard, renderProgress, renderNutrition, renderProfile, renderHistory]) {
+    try { await draw(); } catch (e) {}
+  }
 
   // Tip of day
   const tipEl = document.getElementById('tip-of-day');
@@ -206,7 +212,6 @@ async function init() {
     tipEl.textContent = TIPS[dayOfYear % TIPS.length];
   }
 
-  setupNav();
   setupInstallBanner();
   setupQuickLog();
   setupFoodForm();
@@ -231,16 +236,18 @@ function switchTab(tab, silent = false) {
   if (scr) { scr.classList.add('active'); if (!silent) scr.scrollTo({ top: 0 }); }
   if (btn) btn.classList.add('active');
 
-  // Refresh on switch
-  if (tab === 'progress')      renderProgress();
-  if (tab === 'nutrition')     renderNutrition();
-  if (tab === 'history')       renderHistory();
-  if (tab === 'templates')     renderTemplates();
-  if (tab === 'sleep')         renderSleep();
-  if (tab === 'measurements')  renderMeasurements();
-  if (tab === 'achievements')  renderAchievements();
-  if (tab === 'stretching')    stretchInit();
-  if (tab === 'habits')        renderHabits();
+  // Refresh on switch. A render error must not undo the tab change above.
+  try {
+    if (tab === 'progress')      renderProgress();
+    if (tab === 'nutrition')     renderNutrition();
+    if (tab === 'history')       renderHistory();
+    if (tab === 'templates')     renderTemplates();
+    if (tab === 'sleep')         renderSleep();
+    if (tab === 'measurements')  renderMeasurements();
+    if (tab === 'achievements')  renderAchievements();
+    if (tab === 'stretching')    stretchInit();
+    if (tab === 'habits')        renderHabits();
+  } catch (e) {}
   // highlight more-tab for sub-screens
   const moreTabs = ['templates','sleep','measurements','achievements','tdee','stretching','habits'];
   if (moreTabs.includes(tab)) {
@@ -252,6 +259,7 @@ function switchTab(tab, silent = false) {
 // ── Toast ─────────────────────────────────────────────────────────────────────
 function showToast(msg, dur = 2200) {
   const t = document.getElementById('toast');
+  if (!t) return;
   t.textContent = msg;
   t.classList.add('show');
   clearTimeout(t._timer);
@@ -262,8 +270,8 @@ function showToast(msg, dur = 2200) {
 async function loadWorkouts() {
   try {
     S.allWorkouts = await WDB.getWorkouts();
-    const weekStart = getWeekStart();
-    S.weekWorkouts = S.allWorkouts.filter(w => new Date(w.date) >= weekStart).length;
+    const weekKey = ymd(getWeekStart());
+    S.weekWorkouts = S.allWorkouts.filter(w => w.date >= weekKey).length;
   } catch (e) { S.allWorkouts = []; }
 }
 
@@ -331,7 +339,7 @@ function renderDashboard() {
       for (let d = 0; d < 7; d++) {
         const ms = weekStartMs + (w * 7 + d) * MS_DAY;
         if (ms > todayMs + MS_DAY) { col += '<div style="width:11px;height:11px"></div>'; continue; }
-        const dateStr = new Date(ms).toISOString().slice(0, 10);
+        const dateStr = ymd(new Date(ms));
         const count = S.allWorkouts.filter(wk => wk.date === dateStr).length;
         const isToday = dateStr === todayStr();
         const bg = count === 0
@@ -346,10 +354,9 @@ function renderDashboard() {
       cols.push(col);
     }
     heatmapEl.innerHTML = cols.join('');
-    const total84 = S.allWorkouts.filter(w => {
-      const ms = new Date(w.date).getTime();
-      return ms >= weekStartMs && ms <= todayMs;
-    }).length;
+    const heatStart = ymd(new Date(weekStartMs));
+    const heatToday = todayStr();
+    const total84 = S.allWorkouts.filter(w => w.date >= heatStart && w.date <= heatToday).length;
     if (heatmapCount) heatmapCount.textContent = `${total84} тр. за 12 нед.`;
   }
 
@@ -390,14 +397,16 @@ function renderDashboard() {
     const barsEl = document.getElementById('week-vol-bars');
     const totEl  = document.getElementById('week-vol-total');
     if (!secEl || !barsEl) return;
-    const weekStart = getWeekStart();
-    const weekWs = S.allWorkouts.filter(w => new Date(w.date) >= weekStart);
+    const weekKey = ymd(getWeekStart());
+    const weekWs = S.allWorkouts.filter(w => w.date >= weekKey);
     if (weekWs.length === 0) return;
     secEl.style.display = '';
     const todayDow = (new Date().getDay() + 6) % 7;
     const volByDow = new Array(7).fill(0);
     for (const w of weekWs) {
-      const dow = (new Date(w.date).getDay() + 6) % 7;
+      const day = parseDay(w.date);
+      if (Number.isNaN(day.getTime())) continue;
+      const dow = (day.getDay() + 6) % 7;
       const sets = await WDB.getSetsFor(w.id);
       volByDow[dow] += sets.reduce((s, x) => s + (x.weight || 0) * (x.reps || 0), 0);
     }
@@ -432,7 +441,7 @@ function renderDashboard() {
     if (kcalLblEl) kcalLblEl.textContent = `${todayKcal} / ${kcalGoal} ккал`;
   }
 
-  // AI Coach message
+  // Weekly goal summary based on saved workouts
   const aiIcon = document.getElementById('ai-coach-icon');
   const aiTitle = document.getElementById('ai-coach-title');
   const aiMsg = document.getElementById('ai-coach-msg');
@@ -449,7 +458,7 @@ function renderDashboard() {
     } else if (S.weekWorkouts >= S.weekGoal) {
       if (aiIcon) aiIcon.textContent = '🎯';
       aiTitle.textContent = 'Цель недели выполнена!';
-      aiMsg.textContent = 'Можешь отдохнуть или добавить бонусную тренировку для ускорения прогресса.';
+      aiMsg.textContent = 'Все запланированные занятия на этой неделе записаны. Посмотри результаты в разделе «Прогресс».';
     } else {
       const left = S.weekGoal - S.weekWorkouts;
       if (aiIcon) aiIcon.textContent = left <= 1 ? '⚡' : '💪';
@@ -501,7 +510,7 @@ function renderDashboard() {
     const MS_DAY = 86400000;
     for (let i = 0; i < 365; i++) {
       const d   = new Date(Date.now() - i * MS_DAY);
-      const key = 'lmc_kcal_' + d.toISOString().slice(0, 10);
+      const key = 'lmc_kcal_' + ymd(d);
       if (+localStorage.getItem(key) > 0) streak++;
       else if (i > 0) break;
     }
@@ -640,6 +649,7 @@ function renderWater() {
   const canvas = document.getElementById('qs-water-ring');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
+  if (!ctx) return;
   const cx = 26, cy = 26, r = 20, sw = 5;
   ctx.clearRect(0, 0, 52, 52);
   ctx.beginPath();
@@ -659,9 +669,15 @@ function renderWater() {
 }
 
 window.addWater = async function(ml) {
-  S.waterMl = Math.max(0, S.waterMl + ml);
-  try { if (ml > 0) await WDB.addWater(ml); else await WDB.putWater(S.waterMl); }
-  catch (e) {}
+  const next = Math.max(0, S.waterMl + ml);
+  try {
+    if (ml > 0) await WDB.addWater(ml);
+    else await WDB.putWater(next);
+  } catch (e) {
+    showToast('Запись не сохранена');
+    return;
+  }
+  S.waterMl = next;
   renderWater();
   if (ml > 0 && S.waterMl >= S.waterGoalMl) showToast('💧 Норма воды выполнена! Отлично!');
   else if (ml > 0) showToast(`+${ml} мл добавлено`);
@@ -669,8 +685,12 @@ window.addWater = async function(ml) {
 };
 
 window.resetWaterToday = async function() {
+  try { await WDB.resetWater(); }
+  catch (e) {
+    showToast('Запись не сохранена');
+    return;
+  }
   S.waterMl = 0;
-  try { await WDB.resetWater(); } catch (e) {}
   renderWater();
   showToast('Сброс воды выполнен');
 };
@@ -911,7 +931,7 @@ function updateRestPresetUI() {
 function updateRestBanner() {
   const m = Math.floor(S.log.restSec / 60);
   const s = (S.log.restSec % 60).toString().padStart(2, '0');
-  setEl('rest-timer-text', ${m}:);
+  setEl('rest-timer-text', `${m}:${s}`);
   const total = S.log.restPresetSec || 90;
   const frac  = S.log.restSec / total;
   const ring = document.getElementById('rest-ring');
@@ -923,7 +943,7 @@ function updateRestBanner() {
   const bar = document.getElementById('rest-bar-fill');
   if (bar) {
     const pct = frac * 100;
-    bar.style.width = ${pct}%;
+    bar.style.width = `${pct}%`;
     bar.style.background = pct > 50 ? 'var(--teal)' : pct > 20 ? 'var(--orange)' : 'var(--red)';
   }
 }
@@ -960,7 +980,10 @@ window.finishWorkout = async function() {
       weight: +s.weight || 0,
       reps:   +s.reps   || 0,
     })));
-  } catch (e) {}
+  } catch (e) {
+    showToast('Не удалось сохранить тренировку');
+    return;
+  }
 
   // Streak update
   const lastDate = localStorage.getItem('lmc_last_workout');
@@ -1062,7 +1085,7 @@ async function loadBodyStats() {
 function renderProgress() {
   const ws = S.allWorkouts;
   setEl('prog-total', ws.length);
-  setEl('prog-week', ws.filter(w => new Date(w.date) >= getWeekStart()).length);
+  setEl('prog-week', ws.filter(w => w.date >= ymd(getWeekStart())).length);
   setEl('prog-streak', `${S.streak}`);
 
   const lastW = S.bodyStats.filter(s => s.weightKg > 0).at(-1);
@@ -1092,15 +1115,15 @@ function renderProgress() {
 function renderRecentWorkoutsFeed(ws) {
   const el = document.getElementById('recent-workouts-feed');
   if (!el) return;
-  const recent = [...ws].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 7);
+  const recent = [...ws].sort((a, b) => String(b.date || '').localeCompare(String(a.date || ''))).slice(0, 7);
   if (!recent.length) {
     el.innerHTML = '<p style="color:var(--text-2);text-align:center;font-size:13px;padding:8px 0">Нет записей</p>';
     return;
   }
   const today = todayStr();
-  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
+  const yesterday = prevDay(today);
   el.innerHTML = recent.map((w, i) => {
-    const label = w.date === today ? 'Сегодня' : w.date === yesterday ? 'Вчера' : new Date(w.date).toLocaleDateString('ru-RU', { day:'numeric', month:'short' });
+    const label = formatDate(w.date);
     const border = i < recent.length - 1 ? 'border-bottom:1px solid var(--border);' : '';
     return `<div style="${border}display:flex;align-items:center;gap:10px;padding:9px 0">
       <div style="width:36px;height:36px;border-radius:10px;background:rgba(99,102,241,.12);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${w.emoji||'🏋️'}</div>
@@ -1181,14 +1204,15 @@ function renderDowChart(ws) {
   if (!dowEl) return;
   const DAY_NAMES = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
   const counts = new Array(7).fill(0);
-  const now = Date.now();
-  const MS84 = 84 * 86400000;
+  const cutoff = new Date();
+  cutoff.setHours(0, 0, 0, 0);
+  cutoff.setDate(cutoff.getDate() - 84);
+  const cutoffKey = ymd(cutoff);
   ws.forEach(w => {
-    const ms = new Date(w.date).getTime();
-    if (now - ms <= MS84) {
-      const dow = (new Date(w.date).getDay() + 6) % 7;
-      counts[dow]++;
-    }
+    if (!w.date || w.date < cutoffKey) return;
+    const day = parseDay(w.date);
+    if (Number.isNaN(day.getTime())) return;
+    counts[(day.getDay() + 6) % 7]++;
   });
   const maxC = Math.max(...counts, 1);
   const bestDow = counts.indexOf(Math.max(...counts));
@@ -1206,7 +1230,7 @@ function renderDowChart(ws) {
 
 async function renderWeeklySummary(ws) {
   const weekStart = getWeekStart();
-  const weekWs = ws.filter(w => new Date(w.date) >= weekStart);
+  const weekWs = ws.filter(w => w.date >= ymd(weekStart));
 
   // Date range label
   const rangeEl = document.getElementById('weekly-summary-range');
@@ -1269,7 +1293,7 @@ async function renderWeeklySummary(ws) {
 
 async function calcWeeklyVolume(ws) {
   const weekStart = getWeekStart();
-  const weekWs = ws.filter(w => new Date(w.date) >= weekStart);
+  const weekWs = ws.filter(w => w.date >= ymd(weekStart));
   let totalVol = 0;
   for (const w of weekWs) {
     try {
@@ -1295,9 +1319,9 @@ function renderMonthlyTrend(ws) {
   const now = new Date();
   for (let i = 5; i >= 0; i--) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const key = ${d.getFullYear()}-;
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
     const label = d.toLocaleDateString('ru-RU', { month:'short' });
-    const count = ws.filter(w => w.date && w.date.startsWith(key)).length;
+    const count = ws.filter(w => w.date && String(w.date).startsWith(key)).length;
     months.push({ key, label, count });
   }
 
@@ -1306,7 +1330,7 @@ function renderMonthlyTrend(ws) {
   const prevMonth = months[4].count;
   if (compareEl) {
     const diff = thisMonth - prevMonth;
-    compareEl.textContent = diff > 0 ? ▲ + vs прошлый : diff < 0 ? ▼  vs прошлый : '= прошлый';
+    compareEl.textContent = diff > 0 ? `▲ +${diff} vs прошлый` : diff < 0 ? `▼ ${diff} vs прошлый` : '= прошлый';
     compareEl.style.color = diff > 0 ? 'var(--green)' : diff < 0 ? 'var(--red)' : 'var(--text-3)';
   }
 
@@ -1315,16 +1339,18 @@ function renderMonthlyTrend(ws) {
     const isCurrent = i === 5;
     const color = isCurrent ? 'var(--accent)' : 'var(--elevated)';
     const textColor = isCurrent ? 'var(--accent)' : 'var(--text-3)';
-    return <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
-      <span style="font-size:10px;font-weight:700;color:"></span>
-      <div style="width:100%;height:px;background:;border-radius:4px 4px 0 0;transition:height .4s"></div>
-    </div>;
+    const h = Math.max(4, Math.round((pct / 100) * 58));
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
+      <span style="font-size:10px;font-weight:700;color:${textColor}">${m.count || ''}</span>
+      <div style="width:100%;height:${h}px;background:${color};border-radius:4px 4px 0 0;transition:height .4s"></div>
+    </div>`;
   }).join('');
 
   if (labelsEl) {
     labelsEl.innerHTML = months.map((m, i) => {
       const isCurrent = i === 5;
-      return <span style="font-size:10px;color:;flex:1;text-align:center"></span>;
+      const color = isCurrent ? 'var(--accent)' : 'var(--text-3)';
+      return `<span style="font-size:10px;color:${color};flex:1;text-align:center">${m.label}</span>`;
     }).join('');
   }
 }
@@ -1359,6 +1385,7 @@ async function renderMonthlyVolumeChart(ws) {
   canvas.width  = canvas.offsetWidth  * dpr;
   canvas.height = canvas.offsetHeight * dpr;
   const ctx = canvas.getContext('2d');
+  if (!ctx) return;
   ctx.scale(dpr, dpr);
   const W = canvas.offsetWidth, H = canvas.offsetHeight;
   const pad = { t: 18, b: 4, l: 4, r: 4 };
@@ -1379,7 +1406,8 @@ async function renderMonthlyVolumeChart(ws) {
     grad.addColorStop(1, isCur ? 'rgba(20,184,166,0.3)' : 'rgba(60,60,100,0.3)');
     ctx.fillStyle = grad;
     ctx.beginPath();
-    ctx.roundRect(x, y, barW, barH, [3, 3, 0, 0]);
+    if (ctx.roundRect) ctx.roundRect(x, y, barW, barH, [3, 3, 0, 0]);
+    else ctx.rect(x, y, barW, barH);
     ctx.fill();
 
     if (m.vol > 0) {
@@ -1403,7 +1431,7 @@ async function renderMuscleFreq(ws) {
   if (!el) return;
 
   const weekStart = getWeekStart();
-  const weekWs = ws.filter(w => new Date(w.date) >= weekStart);
+  const weekWs = ws.filter(w => w.date >= ymd(weekStart));
 
   if (!weekWs.length) {
     el.innerHTML = '<p style="color:var(--text-2);text-align:center;padding:12px;font-size:13px">На этой неделе тренировок нет</p>';
@@ -1467,7 +1495,7 @@ function renderWeekChart(ws) {
   for (let i = 6; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
-    days.push(d.toISOString().split('T')[0]);
+    days.push(ymd(d));
   }
   bars.innerHTML = days.map((date, idx) => {
     const count = ws.filter(w => w.date === date).length;
@@ -1670,7 +1698,7 @@ window.renderOrmChart = async function() {
   });
 
   // x labels (first + last)
-  const fmtDate = d => { const dt=new Date(d); return dt.toLocaleDateString('ru-RU',{day:'numeric',month:'short'}); };
+  const fmtDate = d => { const dt = parseDay(d); return Number.isNaN(dt.getTime()) ? '' : dt.toLocaleDateString('ru-RU',{day:'numeric',month:'short'}); };
   ctx.fillStyle='rgba(255,255,255,0.35)'; ctx.font=`9px sans-serif`;
   ctx.textAlign='left';  ctx.fillText(fmtDate(pts[0].date), pad.l, H-5);
   ctx.textAlign='right'; ctx.fillText(fmtDate(pts[pts.length-1].date), W-pad.r, H-5);
@@ -1692,6 +1720,7 @@ function renderWeightGraph() {
   canvas.width  = canvas.offsetWidth  * dpr;
   canvas.height = canvas.offsetHeight * dpr;
   const ctx = canvas.getContext('2d');
+  if (!ctx) return;
   ctx.scale(dpr, dpr);
   const W = canvas.offsetWidth, H = canvas.offsetHeight;
   ctx.clearRect(0, 0, W, H);
@@ -1801,7 +1830,7 @@ function renderHistoryStats(ws) {
   const el = document.getElementById('history-stats');
   if (!el || !ws.length) return;
   const now = new Date();
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+  const monthStart = ymd(new Date(now.getFullYear(), now.getMonth(), 1));
   const thisMonth = ws.filter(w => w.date >= monthStart).length;
   const totalSets = ws.reduce((s, w) => s + (w.setCount || 0), 0);
   const chip = (val, label, color) =>
@@ -1832,17 +1861,17 @@ async function renderHistory() {
       bwCard.style.display = '';
       const vol = (await WDB.getSetsFor(bestW.id)).reduce((s, x) => s + (x.weight || 0) * (x.reps || 0), 0);
       setEl('bw-name', bestW.name);
-      const d = new Date(bestW.date);
-      setEl('bw-date', d.toLocaleDateString('ru-RU', { day:'numeric', month:'long', year:'numeric' }));
+      const d = parseDay(bestW.date);
+      setEl('bw-date', Number.isNaN(d.getTime()) ? '' : d.toLocaleDateString('ru-RU', { day:'numeric', month:'long', year:'numeric' }));
       setEl('bw-vol',  Math.round(vol).toLocaleString('ru'));
       setEl('bw-sets', bestSets);
     }
   })();
   const now = new Date();
   const periodStart = (() => {
-    if (_historyPeriod === 'week')  { const d = new Date(now); d.setDate(d.getDate() - d.getDay() + (d.getDay() === 0 ? -6 : 1)); d.setHours(0,0,0,0); return d.toISOString().split('T')[0]; }
-    if (_historyPeriod === 'month') return new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
-    if (_historyPeriod === '3m')    return new Date(now.getFullYear(), now.getMonth() - 2, 1).toISOString().split('T')[0];
+    if (_historyPeriod === 'week')  { const d = new Date(now); d.setDate(d.getDate() - d.getDay() + (d.getDay() === 0 ? -6 : 1)); d.setHours(0,0,0,0); return ymd(d); }
+    if (_historyPeriod === 'month') return ymd(new Date(now.getFullYear(), now.getMonth(), 1));
+    if (_historyPeriod === '3m')    return ymd(new Date(now.getFullYear(), now.getMonth() - 2, 1));
     return null;
   })();
   let ws = periodStart ? all.filter(w => w.date >= periodStart) : all;
@@ -1852,12 +1881,15 @@ async function renderHistory() {
     return;
   }
   function getWeekKey(dateStr) {
-    const d = new Date(dateStr), day = d.getDay() || 7;
+    const d = parseDay(dateStr);
+    if (Number.isNaN(d.getTime())) return '';
+    const day = d.getDay() || 7;
     d.setDate(d.getDate() - day + 1);
-    return d.toISOString().split('T')[0];
+    return ymd(d);
   }
   function weekLabel(wk) {
-    const fr = new Date(wk), to = new Date(wk);
+    const fr = parseDay(wk), to = parseDay(wk);
+    if (Number.isNaN(fr.getTime())) return '';
     to.setDate(to.getDate() + 6);
     return fr.getDate() + ' ' + fr.toLocaleDateString('ru-RU',{month:'short'}) + ' – ' + to.getDate() + ' ' + to.toLocaleDateString('ru-RU',{month:'short'});
   }
@@ -2118,7 +2150,7 @@ function renderNutWeekChart() {
   for (let i = 6; i >= 0; i--) {
     const d = new Date(now);
     d.setDate(d.getDate() - i);
-    const key = d.toISOString().split('T')[0];
+    const key = ymd(d);
     const stored = parseInt(localStorage.getItem('lmc_kcal_' + key) || '0', 10);
     // Today: use live S.nutritionItems
     const kcal = (i === 0)
@@ -2260,7 +2292,11 @@ window.addFood = async function() {
     f:       food.f * g / 100,
     addedAt: Date.now(),
   };
-  try { await WDB.addNutrition(item); } catch (e) {}
+  try { item.id = await WDB.addNutrition(item); }
+  catch (e) {
+    showToast('Запись не сохранена');
+    return;
+  }
   S.nutritionItems.push(item);
   // Persist daily kcal for 7-day chart
   const todayKcalKey = 'lmc_kcal_' + todayStr();
@@ -2275,7 +2311,11 @@ window.addFood = async function() {
 window.deleteMealItem = async function(idx) {
   const item = S.nutritionItems[idx];
   if (!item) return;
-  try { if (item.id) await WDB.deleteNutrition(item.id); } catch(e) {}
+  try { if (item.id) await WDB.deleteNutrition(item.id); }
+  catch (e) {
+    showToast('Запись не сохранена');
+    return;
+  }
   S.nutritionItems.splice(idx, 1);
   renderNutrition();
   showToast('🗑 Удалено');
@@ -2427,7 +2467,7 @@ function drawProfileHeatmap(ws) {
     let count = 0;
     const d = new Date(weekStart);
     while (d <= weekEnd) {
-      if (daySet.has(d.toISOString().slice(0,10))) count++;
+      if (daySet.has(ymd(d))) count++;
       d.setDate(d.getDate() + 1);
     }
     const minH = 5;
@@ -2476,7 +2516,7 @@ window.exportData = async function() {
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
     a.href     = url;
-    a.download = lmc-export-.json;
+    a.download = `lmc-export-${todayStr()}.json`;
     a.click();
     URL.revokeObjectURL(url);
     showToast('📤 Данные экспортированы!');
@@ -2489,13 +2529,14 @@ window.saveBodyStat = async function() {
     await WDB.saveBodyStat({ weightKg: w });
     S.bodyStats = await WDB.getBodyStats();
   } catch (e) {}
-  document.getElementById('body-weight').value = '';
+  const weightInput = document.getElementById('body-weight');
+  if (weightInput) weightInput.value = '';
   setEl('qs-weight', `${w} кг`);
   setEl('prog-weight', `${w} кг`);
   setEl('profile-weight-stat', `${w} кг`);
   renderWeightGraph();
   showToast(`⚖️ Вес ${w} кг сохранён!`);
-  document.getElementById('weight-sheet').classList.remove('open');
+  document.getElementById('weight-sheet')?.classList.remove('open');
 };
 
 // ── Install Banner ────────────────────────────────────────────────────────────
@@ -2524,28 +2565,64 @@ function setupInstallBanner() {
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-function todayStr() { return new Date().toISOString().split('T')[0]; }
+function ymd(d) {
+  if (typeof d === 'string') {
+    const key = d.trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(key)) return key;
+  }
+  const dt = d instanceof Date ? d : new Date(d);
+  if (Number.isNaN(dt.getTime())) return '';
+  return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
+}
+
+function todayStr() {
+  return ymd(new Date());
+}
+
+// YYYY-MM-DD is a local calendar day. new Date("YYYY-MM-DD") is UTC and shifts the Russian day.
+function parseDay(dateStr) {
+  const parts = String(dateStr || '').trim().split('-');
+  if (parts.length !== 3) return new Date(NaN);
+  const y = Number(parts[0]);
+  const m = Number(parts[1]);
+  const day = Number(parts[2]);
+  if (!Number.isInteger(y) || !Number.isInteger(m) || !Number.isInteger(day)) return new Date(NaN);
+  return new Date(y, m - 1, day);
+}
 
 function prevDay(dateStr) {
-  const d = new Date(dateStr);
+  const parsed = parseDay(dateStr);
+  const d = Number.isNaN(parsed.getTime()) ? new Date() : parsed;
   d.setDate(d.getDate() - 1);
-  return d.toISOString().split('T')[0];
+  return ymd(d);
+}
+
+function calendarDaysSince(dateStr, from = new Date()) {
+  const day = parseDay(dateStr);
+  const origin = from instanceof Date ? from : parseDay(from);
+  if (Number.isNaN(day.getTime()) || Number.isNaN(origin.getTime())) return NaN;
+  const end = new Date(origin.getFullYear(), origin.getMonth(), origin.getDate());
+  return Math.round((end - day) / 86400000);
 }
 
 function formatDate(dateStr) {
   if (!dateStr) return '';
-  const diff = Math.floor((Date.now() - new Date(dateStr)) / 86400000);
-  if (diff === 0) return 'Сегодня';
-  if (diff === 1) return 'Вчера';
-  return new Date(dateStr).toLocaleDateString('ru-RU', { day:'numeric', month:'short' });
+  const today = todayStr();
+  if (dateStr === today) return 'Сегодня';
+  if (dateStr === prevDay(today)) return 'Вчера';
+  const d = parseDay(dateStr);
+  if (Number.isNaN(d.getTime())) return '';
+  return d.toLocaleDateString('ru-RU', { day:'numeric', month:'short' });
 }
 
 function formatDateFull(dateStr) {
   if (!dateStr) return '';
-  const diff = Math.floor((Date.now() - new Date(dateStr)) / 86400000);
-  if (diff === 0) return '— Сегодня';
-  if (diff === 1) return '— Вчера';
-  return new Date(dateStr).toLocaleDateString('ru-RU', { weekday:'long', day:'numeric', month:'long' });
+  const today = todayStr();
+  if (dateStr === today) return '— Сегодня';
+  if (dateStr === prevDay(today)) return '— Вчера';
+  const d = parseDay(dateStr);
+  if (Number.isNaN(d.getTime())) return '';
+  return d.toLocaleDateString('ru-RU', { weekday:'long', day:'numeric', month:'long' });
 }
 
 function setEl(id, val) {
@@ -2701,8 +2778,10 @@ window.startTemplate = function(id) {
   // Show template detail sheet
   const sheet = document.getElementById('template-sheet');
   if (!sheet) return;
-  document.getElementById('tmpl-name').textContent = `${t.emoji} ${t.name}`;
+  const nameEl = document.getElementById('tmpl-name');
+  if (nameEl) nameEl.textContent = `${t.emoji} ${t.name}`;
   const exList = document.getElementById('tmpl-exercises');
+  if (!exList) return;
   exList.innerHTML = t.exercises.map((e, i) => `
     <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
       <div style="width:26px;height:26px;border-radius:50%;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--accent);flex-shrink:0">${i+1}</div>
@@ -2718,6 +2797,7 @@ window.startTemplate = function(id) {
 
 window.beginTemplate = function() {
   const sheet = document.getElementById('template-sheet');
+  if (!sheet) return;
   const id    = sheet._templateId;
   const t     = TEMPLATES.find(x => x.id === id);
   if (!t) return;
@@ -2774,7 +2854,7 @@ function renderSleep() {
     const DAY_LABELS = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
     for (let i = 6; i >= 0; i--) {
       const d = new Date(); d.setDate(d.getDate() - i);
-      days.push(d.toISOString().split('T')[0]);
+      days.push(ymd(d));
     }
 
     const maxH   = 10;
@@ -2833,7 +2913,7 @@ function renderSleep() {
       }
 
       // Day label
-      const dowIdx = (new Date(date).getDay() + 6) % 7;
+      const dowIdx = (parseDay(date).getDay() + 6) % 7;
       ctx.fillStyle = isToday ? '#818cf8' : 'rgba(255,255,255,0.4)';
       ctx.font = isToday ? 'bold 9px sans-serif' : '9px sans-serif';
       ctx.textAlign = 'center';
@@ -2975,8 +3055,8 @@ function drawMeasTrendChart(data) {
   ctx.textAlign = 'center';
   [0, Math.floor(pts.length / 2), pts.length - 1].forEach(i => {
     const x = PAD.l + (i / (pts.length - 1)) * chartW;
-    const d = new Date(pts[i].date);
-    ctx.fillText(`${d.getDate()}.${d.getMonth()+1}`, x, H - 4);
+    const d = parseDay(pts[i].date);
+    ctx.fillText(Number.isNaN(d.getTime()) ? '' : `${d.getDate()}.${d.getMonth()+1}`, x, H - 4);
   });
 
   // Lines
@@ -3088,15 +3168,34 @@ const ACHIEVEMENTS = [
   { id:'exercises10',icon:'🎨', name:'Коллекционер',     cat:'Упражнения', desc:'Используй 10 разных упражнений',       check: s => new Set(s.allWorkouts.map(w => w.name)).size >= 10, prog: s => [new Set(s.allWorkouts.map(w => w.name)).size, 10] },
   // ── Особые ────────────────────────────────────────────────────────────────
   { id:'early',      icon:'🌅', name:'Ранняя пташка',    cat:'Особые',     desc:'Тренируйся до 8 утра',                 check: s => s.allWorkouts.some(w => { const h = new Date(w.date + 'T06:00').getHours(); return h < 8; }), prog: null },
-  { id:'weekend',    icon:'🎉', name:'Чемпион выходных', cat:'Особые',     desc:'Тренируйся в субботу и воскресенье',   check: s => { const days = new Set(s.allWorkouts.map(w => new Date(w.date).getDay())); return days.has(0) && days.has(6); }, prog: null },
-  { id:'comeback',   icon:'🔄', name:'Возвращение',      cat:'Особые',     desc:'Вернись после 7+ дней перерыва',       check: s => { if (s.allWorkouts.length < 2) return false; const sorted = s.allWorkouts.map(w => w.date).sort(); for (let i = 1; i < sorted.length; i++) { if ((new Date(sorted[i]) - new Date(sorted[i-1])) / 86400000 >= 7) return true; } return false; }, prog: null },
+  { id:'weekend',    icon:'🎉', name:'Чемпион выходных', cat:'Особые',     desc:'Тренируйся в субботу и воскресенье',   check: s => { const days = new Set(s.allWorkouts.map(w => parseDay(w.date).getDay())); return days.has(0) && days.has(6); }, prog: null },
+  { id:'comeback',   icon:'🔄', name:'Возвращение',      cat:'Особые',     desc:'Вернись после 7+ дней перерыва',       check: s => { if (s.allWorkouts.length < 2) return false; const sorted = s.allWorkouts.map(w => w.date).filter(Boolean).sort(); for (let i = 1; i < sorted.length; i++) { if (calendarDaysSince(sorted[i - 1], parseDay(sorted[i])) >= 7) return true; } return false; }, prog: null },
 ];
 
 function getUnlocked() {
   try { return JSON.parse(localStorage.getItem('lmc_achievements') || '[]'); } catch (e) { return []; }
 }
 function setUnlocked(ids) {
-  localStorage.setItem('lmc_achievements', JSON.stringify(ids));
+  try { localStorage.setItem('lmc_achievements', JSON.stringify(ids)); } catch (e) {}
+}
+
+function checkAchievements() {
+  try {
+    const have = new Set(getUnlocked());
+    const fresh = [];
+    for (const a of ACHIEVEMENTS) {
+      let ok = false;
+      try { ok = !!a.check(S); } catch (e) { ok = false; }
+      if (ok && !have.has(a.id)) {
+        have.add(a.id);
+        fresh.push(a);
+      }
+    }
+    if (!fresh.length) return;
+    setUnlocked([...have]);
+    const last = fresh[fresh.length - 1];
+    showToast(`${last.icon} ${last.name}`);
+  } catch (e) {}
 }
 
 function renderAchievements() {
@@ -3220,9 +3319,7 @@ function scheduleSmartWorkoutReminder() {
     const today = todayStr();
     const lastWorkout = localStorage.getItem('lmc_last_workout');
     if (lastWorkout !== today) {
-      const daysSince = lastWorkout
-        ? Math.floor((Date.now() - new Date(lastWorkout)) / 86400000)
-        : 99;
+      const daysSince = lastWorkout ? calendarDaysSince(lastWorkout) : 99;
       let title = '🏋️ Время тренировки!';
       let body  = 'Одна тренировка сегодня — и ты снова в ритме!';
       if (daysSince >= 3) {
@@ -3265,10 +3362,12 @@ function scheduleWaterReminder() {
 }
 
 // Auto-schedule if permission already granted
-if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-  scheduleSmartWorkoutReminder();
-  scheduleWaterReminder();
-}
+try {
+  if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+    scheduleSmartWorkoutReminder();
+    scheduleWaterReminder();
+  }
+} catch (e) {}
 
 // ── Offline indicator ────────────────────────────────────────────────────────
 window.addEventListener('online',  () => showToast('🌐 Онлайн', 2000));
@@ -3291,7 +3390,7 @@ function saveHabits(habits) { localStorage.setItem('lmc_habits', JSON.stringify(
 
 function habitStreak(doneOn) {
   let streak = 0, d = new Date();
-  while (doneOn.includes(d.toISOString().split('T')[0])) { streak++; d.setDate(d.getDate()-1); }
+  while (streak < 4000 && Array.isArray(doneOn) && doneOn.includes(ymd(d))) { streak++; d.setDate(d.getDate()-1); }
   return streak;
 }
 
@@ -3318,7 +3417,7 @@ function renderHabits() {
     const streak = habitStreak(h.doneOn);
     const last7 = Array.from({length:7},(_,i)=>{
       const d=new Date(); d.setDate(d.getDate()-(6-i));
-      const s=d.toISOString().split('T')[0];
+      const s=ymd(d);
       return `<div style="width:7px;height:7px;border-radius:50%;background:${h.doneOn.includes(s)?'var(--green)':i===6?'rgba(255,255,255,.15)':'rgba(255,255,255,.07)'}"></div>`;
     }).join('');
     return `<div class="card" style="display:flex;align-items:center;gap:12px;padding:14px 16px;margin-bottom:8px;
@@ -3455,7 +3554,7 @@ function renderThisMonth(ws) {
   if (!ws.length) { sec.style.display = 'none'; return; }
 
   const now = new Date();
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0, 10);
+  const monthStart = ymd(new Date(now.getFullYear(), now.getMonth(), 1));
   const monthWs = ws.filter(w => w.date >= monthStart);
   if (!monthWs.length) { sec.style.display = 'none'; return; }
 
@@ -3531,7 +3630,7 @@ function renderCalendar30(ws) {
 
   for (let i = 29; i >= 0; i--) {
     const d   = new Date(today.getTime() - i * MS_DAY);
-    const str = d.toISOString().slice(0, 10);
+    const str = ymd(d);
     const cnt = ws.filter(w => w.date === str).length;
     days.push({ str, cnt, d });
   }

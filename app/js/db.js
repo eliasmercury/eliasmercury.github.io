@@ -5,8 +5,19 @@ let _db = null;
 
 function openDB() {
   if (_db) return Promise.resolve(_db);
+  if (typeof indexedDB === 'undefined') return Promise.reject(new Error('indexedDB unavailable'));
   return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, DB_VER);
+    let req;
+    try { req = indexedDB.open(DB_NAME, DB_VER); }
+    catch (err) { reject(err); return; }
+    let settled = false;
+    const finish = (fn, val) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      fn(val);
+    };
+    const timer = setTimeout(() => finish(reject, new Error('indexedDB timeout')), 8000);
     req.onupgradeneeded = e => {
       const db = e.target.result;
       if (!db.objectStoreNames.contains('workouts')) {
@@ -28,8 +39,13 @@ function openDB() {
         ns.createIndex('date', 'date');
       }
     };
-    req.onsuccess = e => { _db = e.target.result; resolve(_db); };
-    req.onerror   = e => reject(e.target.error);
+    req.onsuccess = e => {
+      _db = e.target.result;
+      _db.onversionchange = () => { try { _db.close(); } catch (err) {} _db = null; };
+      finish(resolve, _db);
+    };
+    req.onerror = e => finish(reject, e.target.error || new Error('indexedDB error'));
+    req.onblocked = () => finish(reject, new Error('indexedDB blocked'));
   });
 }
 
@@ -96,5 +112,6 @@ const WDB = {
 };
 
 function todayStr() {
-  return new Date().toISOString().split('T')[0];
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }

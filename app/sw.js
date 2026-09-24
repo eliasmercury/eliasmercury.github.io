@@ -1,13 +1,13 @@
-const CACHE = 'lmc-v53';
+const CACHE = 'lmc-v55';
 const ASSETS = [
   '/app/',
   '/app/index.html',
   '/app/css/app.css',
   '/app/css/app.css?v=53',
   '/app/js/db.js',
-  '/app/js/db.js?v=50',
+  '/app/js/db.js?v=54',
   '/app/js/app.js',
-  '/app/js/app.js?v=50',
+  '/app/js/app.js?v=54',
   '/app/manifest.json',
   '/app/icons/icon-192.png',
   '/app/icons/icon-512.png',
@@ -44,24 +44,43 @@ self.addEventListener('fetch', e => {
       || await cache.match(url.pathname)
       || await cache.match(url.pathname + url.search);
 
-    if (isNav) {
+    const isCode = url.pathname.endsWith('.js')
+      || url.pathname.endsWith('.css')
+      || url.pathname.endsWith('.json');
+    // Страницы и код — сначала сеть, чтобы толпа не сидела на сломанном кэше.
+    // Картинки можно отдать из кэша сразу.
+    const offlinePage = () => cached || new Response('Living Motion offline', {
+      status: 503,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    });
+
+    if (isNav || isCode) {
       try {
-        const res = await fetch(e.request);
-        if (res && res.status === 200) cache.put(e.request, res.clone());
-        return res;
+        // no-cache so a broken script cannot stay pinned in the HTTP cache.
+        const res = isCode
+          ? await fetch(e.request.url, { cache: 'no-cache', credentials: 'same-origin' })
+          : await fetch(e.request);
+        if (res && res.ok) {
+          cache.put(e.request, res.clone()).catch(() => {});
+          return res;
+        }
+        return cached || res;
       } catch {
-        return cached || new Response('Living Motion offline', {
-          status: 503,
-          headers: { 'Content-Type': 'text/plain; charset=utf-8' },
-        });
+        return offlinePage();
       }
     }
 
-    const net = fetch(e.request).then(res => {
-      if (res && res.status === 200) cache.put(e.request, res.clone());
-      return res;
-    }).catch(() => cached);
-    return cached || net;
+    if (cached) return cached;
+    try {
+      const res = await fetch(e.request);
+      if (res && res.ok) {
+        cache.put(e.request, res.clone()).catch(() => {});
+        return res;
+      }
+      return cached || res;
+    } catch {
+      return cached || new Response('', { status: 504 });
+    }
   })());
 });
 
