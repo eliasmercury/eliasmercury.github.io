@@ -967,6 +967,7 @@ window.finishWorkout = async function() {
   const noteEl = document.getElementById('workout-note-input');
   const workoutNote = noteEl ? noteEl.value.trim() : '';
   if (noteEl) noteEl.value = '';
+  const totalVolumeKg = workoutVolumeKg(filled);
 
   try {
     const wId = await WDB.saveWorkout({
@@ -975,6 +976,7 @@ window.finishWorkout = async function() {
       setCount: filled.length,
       date:     todayStr(),
       note:     workoutNote || undefined,
+      ...(typeof totalVolumeKg === 'number' ? { totalVolumeKg } : {}),
     });
     await WDB.saveSets(wId, filled.map(s => ({
       weight: +s.weight || 0,
@@ -1027,9 +1029,7 @@ window.finishWorkout = async function() {
   renderDashboard();
   renderHistory();
 
-  // Compute total volume
-  const totalVol = filled.reduce((s, x) => s + (+x.weight||0) * (+x.reps||0), 0);
-  showCompletionModal(S.log.exerciseName, S.log.exerciseEmoji || '🏋️', filled.length, totalVol, overloadMsg);
+  showCompletionModal(S.log.exerciseName, S.log.exerciseEmoji || '🏋️', filled.length, totalVolumeKg || 0, overloadMsg);
 
   // Reset session timer
   if (S.log.sessionTimerInterval) { clearInterval(S.log.sessionTimerInterval); S.log.sessionTimerInterval = null; }
@@ -1881,11 +1881,7 @@ async function renderHistory() {
     return;
   }
   function getWeekKey(dateStr) {
-    const d = parseDay(dateStr);
-    if (Number.isNaN(d.getTime())) return '';
-    const day = d.getDay() || 7;
-    d.setDate(d.getDate() - day + 1);
-    return ymd(d);
+    return localWeekStart(dateStr);
   }
   function weekLabel(wk) {
     const fr = parseDay(wk), to = parseDay(wk);
@@ -2291,6 +2287,7 @@ window.addFood = async function() {
     c:       food.c * g / 100,
     f:       food.f * g / 100,
     addedAt: Date.now(),
+    date:    todayStr(),
   };
   try { item.id = await WDB.addNutrition(item); }
   catch (e) {
@@ -2299,7 +2296,7 @@ window.addFood = async function() {
   }
   S.nutritionItems.push(item);
   // Persist daily kcal for 7-day chart
-  const todayKcalKey = 'lmc_kcal_' + todayStr();
+  const todayKcalKey = 'lmc_kcal_' + item.date;
   const prevKcal = parseInt(localStorage.getItem(todayKcalKey) || '0', 10);
   localStorage.setItem(todayKcalKey, prevKcal + Math.round(item.kcal || 0));
   _foodSelIdx = -1; qty.value = ''; setEl('food-preview', '');
@@ -2316,6 +2313,9 @@ window.deleteMealItem = async function(idx) {
     showToast('Запись не сохранена');
     return;
   }
+  const kcalKey = 'lmc_kcal_' + nutritionDayKey(item);
+  const prevKcal = parseInt(localStorage.getItem(kcalKey) || '0', 10);
+  localStorage.setItem(kcalKey, Math.max(0, prevKcal - Math.round(item.kcal || 0)));
   S.nutritionItems.splice(idx, 1);
   renderNutrition();
   showToast('🗑 Удалено');
@@ -2360,30 +2360,36 @@ async function renderProfile() {
   const kcalGoal   = S.kcalGoal || 2000;
   drawGoalRing('goal-ring-kcal',     todayKcal,      kcalGoal,     '#fb923c', 'goal-ring-kcal-val',     null, null, todayKcal > 999 ? Math.round(todayKcal/100)/10 + 'k' : String(todayKcal));
 
-  // Best week card
+  // Best week card — local YYYY-MM-DD already stored on the workout, same key as the heatmap.
   const bwCard = document.getElementById('best-week-card');
   if (bwCard && S.allWorkouts.length > 0) {
-    const MS_WEEK = 7 * 24 * 3600 * 1000;
-    // Group workouts by ISO week key (YYYY-Www)
     const weekMap = {};
-    S.allWorkouts.forEach(w => {
-      const d = new Date(w.startedAt);
-      const jan4 = new Date(d.getFullYear(), 0, 4);
-      const weekNum = Math.ceil(((d - jan4) / 86400000 + jan4.getDay() + 1) / 7);
-      const key = `${d.getFullYear()}-W${String(weekNum).padStart(2,'0')}`;
-      if (!weekMap[key]) weekMap[key] = { count: 0, vol: 0, startMs: d.getTime() };
+    for (const w of S.allWorkouts) {
+      const key = localWeekStart(w.date);
+      if (!key) continue;
+      if (!weekMap[key]) weekMap[key] = { count: 0, vol: 0, startKey: key };
       weekMap[key].count++;
-      weekMap[key].vol += (w.totalVolumeKg || 0);
-    });
-    const best = Object.values(weekMap).reduce((a, b) => b.count > a.count ? b : a);
-    if (best.count > 0) {
+      let sets;
+      if (!Number.isFinite(w.totalVolumeKg) && w.id != null) {
+        try { sets = await WDB.getSetsFor(w.id); }
+        catch (e) { sets = undefined; }
+      }
+      const vol = bestWeekVolumeKg(w, sets);
+      if (Number.isFinite(vol)) weekMap[key].vol += vol;
+    }
+    const weeks = Object.values(weekMap);
+    const best = weeks.reduce((a, b) => b.count > a.count ? b : a, weeks[0] || null);
+    if (best && best.count > 0) {
       bwCard.style.display = '';
       setEl('best-week-count', best.count);
-      const start = new Date(best.startMs);
-      const end   = new Date(best.startMs + 6 * 86400000);
+      const start = parseDay(best.startKey);
+      const end   = parseDay(best.startKey);
+      end.setDate(end.getDate() + 6);
       const fmt   = d => `${d.getDate()} ${['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'][d.getMonth()]}`;
       setEl('best-week-dates', `${fmt(start)} – ${fmt(end)}`);
       setEl('best-week-vol',   best.vol > 0 ? `Объём: ${Math.round(best.vol).toLocaleString('ru')} кг` : '');
+    } else {
+      bwCard.style.display = 'none';
     }
   }
 }
@@ -2615,6 +2621,38 @@ function formatDate(dateStr) {
   return d.toLocaleDateString('ru-RU', { day:'numeric', month:'short' });
 }
 
+function nutritionDayKey(item) {
+  const raw = item && typeof item.date === 'string' ? item.date.trim() : '';
+  if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
+  return todayStr();
+}
+
+function localWeekStart(dateStr) {
+  const d = parseDay(dateStr);
+  if (Number.isNaN(d.getTime())) return '';
+  const day = d.getDay() || 7;
+  d.setDate(d.getDate() - day + 1);
+  return ymd(d);
+}
+
+// Day key alone is not a clock. «Ранняя пташка» stays locked unless startedAt has a real time.
+function storedWorkoutHour(w) {
+  const raw = w && w.startedAt;
+  if (raw == null || raw === '') return null;
+  if (typeof raw === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(raw.trim())) return null;
+  if (typeof raw === 'number' && (!Number.isFinite(raw) || raw < 1e11)) return null;
+  if (typeof raw === 'string') {
+    const hm = raw.trim().match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
+    if (hm) {
+      const hour = Number(hm[1]);
+      return hour >= 0 && hour <= 23 ? hour : null;
+    }
+  }
+  const d = raw instanceof Date ? raw : new Date(raw);
+  if (Number.isNaN(d.getTime())) return null;
+  return d.getHours();
+}
+
 function formatDateFull(dateStr) {
   if (!dateStr) return '';
   const today = todayStr();
@@ -2623,6 +2661,22 @@ function formatDateFull(dateStr) {
   const d = parseDay(dateStr);
   if (Number.isNaN(d.getTime())) return '';
   return d.toLocaleDateString('ru-RU', { weekday:'long', day:'numeric', month:'long' });
+}
+
+// Stored totalVolumeKg wins, including 0. Missing volume is the set sum; no sets stays unset.
+function bestWeekVolumeKg(w, sets) {
+  if (w && Number.isFinite(w.totalVolumeKg)) return w.totalVolumeKg;
+  return workoutVolumeKg(sets);
+}
+
+// No sets: leave volume unset. A set without a finite weight or reps adds 0.
+function workoutVolumeKg(sets) {
+  if (!Array.isArray(sets) || sets.length === 0) return undefined;
+  return sets.reduce((sum, set) => {
+    const weight = Number(set && set.weight);
+    const reps = Number(set && set.reps);
+    return sum + (Number.isFinite(weight) ? weight : 0) * (Number.isFinite(reps) ? reps : 0);
+  }, 0);
 }
 
 function setEl(id, val) {
@@ -3167,7 +3221,7 @@ const ACHIEVEMENTS = [
   { id:'exercises5', icon:'🎯', name:'Разнообразие',     cat:'Упражнения', desc:'Используй 5 разных упражнений',        check: s => new Set(s.allWorkouts.map(w => w.name)).size >= 5,  prog: s => [new Set(s.allWorkouts.map(w => w.name)).size, 5]  },
   { id:'exercises10',icon:'🎨', name:'Коллекционер',     cat:'Упражнения', desc:'Используй 10 разных упражнений',       check: s => new Set(s.allWorkouts.map(w => w.name)).size >= 10, prog: s => [new Set(s.allWorkouts.map(w => w.name)).size, 10] },
   // ── Особые ────────────────────────────────────────────────────────────────
-  { id:'early',      icon:'🌅', name:'Ранняя пташка',    cat:'Особые',     desc:'Тренируйся до 8 утра',                 check: s => s.allWorkouts.some(w => { const h = new Date(w.date + 'T06:00').getHours(); return h < 8; }), prog: null },
+  { id:'early',      icon:'🌅', name:'Ранняя пташка',    cat:'Особые',     desc:'Тренируйся до 8 утра',                 check: s => s.allWorkouts.some(w => { const h = storedWorkoutHour(w); return h != null && h < 8; }), prog: null },
   { id:'weekend',    icon:'🎉', name:'Чемпион выходных', cat:'Особые',     desc:'Тренируйся в субботу и воскресенье',   check: s => { const days = new Set(s.allWorkouts.map(w => parseDay(w.date).getDay())); return days.has(0) && days.has(6); }, prog: null },
   { id:'comeback',   icon:'🔄', name:'Возвращение',      cat:'Особые',     desc:'Вернись после 7+ дней перерыва',       check: s => { if (s.allWorkouts.length < 2) return false; const sorted = s.allWorkouts.map(w => w.date).filter(Boolean).sort(); for (let i = 1; i < sorted.length; i++) { if (calendarDaysSince(sorted[i - 1], parseDay(sorted[i])) >= 7) return true; } return false; }, prog: null },
 ];
