@@ -1,12 +1,13 @@
 {
-  "versionCode": 101454,
-  "versionName": "2.1.454",
+  "versionCode": 101592,
+  "versionName": "2.1.592",
   "apkUrl": "https://github.com/eliasmercury/living-motion-releases/releases/latest/download/LivingMotionCoach-latest.apk",
-  "apkUrlFallback": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101454/LivingMotionCoach-v101454-release.apk",
-  "sha256": "e44e3ae3d4aba4445303f152cf0e4f6ca02e6c7458313e5d74bbf49a531b21e7",
-  "changelog": "План тренировок, дневник подходов и каталог упражнений на русском и английском. Питание со сканером штрихкодов, учётом воды и журналом добавок. Управление данными и удаление аккаунта в приложении.",
+  "apkUrlFallback": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101592/LivingMotionCoach-v101592-release.apk",
+  "sha256": "2b66505206269195ab032b96c2c2cf6b240d28ba676bb9d74e0b6d9e5441622d",
+  "changelog": "Профиль: чёткие объёмные значки, цельные фоны карточек и фотография вместо смайликов.\nЦели и уровень: выбор сохраняется без скачков экрана.\nУпражнения: понятные названия и фильтры, переходы к технике и мышцам, цветные полосы условного акцента по роли мышцы.\nПитание: сканер сохраняет выбранные дату и приём пищи; исправлены расчёт порции и шаблоны.\nДостижения: для 36 карточек подключены разные иллюстрации.",
   "forceUpdate": false,
   "minVersionCode": 1,
-  "buildDate": "2026-09-20T00:30:00Z",
-  "commitSha": "0d7f2f3"
+  "buildDate": "2026-10-02T22:13:41Z",
+  "commitSha": "2d51259c9d2d5c3f059e3775d557f54abf481508",
+  "apkSizeBytes": 297679599
 }
