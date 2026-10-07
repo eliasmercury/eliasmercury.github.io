@@ -1,13 +1,13 @@
 {
-  "versionCode": 101593,
-  "versionName": "2.1.593",
+  "versionCode": 101594,
+  "versionName": "2.1.594",
   "apkUrl": "https://github.com/eliasmercury/living-motion-releases/releases/latest/download/LivingMotionCoach-latest.apk",
-  "apkUrlFallback": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101593/LivingMotionCoach-v101593-release.apk",
-  "sha256": "b8d4a836b5f6fbbc96808bdabcfd4d56995e3d241f4423e3e470f3f574fed2ea",
-  "changelog": "Упражнения: кривые названия приседа и движений на наклонной скамье читаются по-русски.\nИтоги года считаются по записанным тренировкам, без выдуманной нормы на следующий год.\nПитание: на графике стоят дни недели, без оценки из 100.\nЦены ПРО те же: 300 ₽ в месяц и 2 490 ₽ в год. Магазины остаются «Скоро».",
+  "apkUrlFallback": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101594/LivingMotionCoach-v101594-release.apk",
+  "sha256": "ded7d60d4777216ac6b0325bf02f599a2ca4c2f76195d65c34edf744d10400c6",
+  "changelog": "Шаблоны: жим гантелей на наклонной, фронтальный присед и жим на обратном наклоне открывают свою карточку каталога.\nКривые подписи наклона, обратного наклона и скамьи читаются по-русски. Имена в базе не переписаны.\nНедели после первой в готовых программах по-прежнему не дописаны.\nЦены ПРО те же: 300 ₽ в месяц и 2 490 ₽ в год. Магазины остаются «Скоро».",
   "forceUpdate": false,
   "minVersionCode": 1,
-  "buildDate": "2026-10-07T11:25:20Z",
+  "buildDate": "2026-10-07T12:04:23Z",
   "commitSha": "e0a15e09c89fa66f87a31ac18fa8c91df24d774e",
-  "apkSizeBytes": 298095404
+  "apkSizeBytes": 298097524
 }
