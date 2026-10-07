@@ -1,13 +1,13 @@
 {
-  "versionCode": 101592,
-  "versionName": "2.1.592",
+  "versionCode": 101593,
+  "versionName": "2.1.593",
   "apkUrl": "https://github.com/eliasmercury/living-motion-releases/releases/latest/download/LivingMotionCoach-latest.apk",
-  "apkUrlFallback": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101592/LivingMotionCoach-v101592-release.apk",
-  "sha256": "2b66505206269195ab032b96c2c2cf6b240d28ba676bb9d74e0b6d9e5441622d",
-  "changelog": "Профиль: чёткие объёмные значки, цельные фоны карточек и фотография вместо смайликов.\nЦели и уровень: выбор сохраняется без скачков экрана.\nУпражнения: понятные названия и фильтры, переходы к технике и мышцам, цветные полосы условного акцента по роли мышцы.\nПитание: сканер сохраняет выбранные дату и приём пищи; исправлены расчёт порции и шаблоны.\nДостижения: для 36 карточек подключены разные иллюстрации.",
+  "apkUrlFallback": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101593/LivingMotionCoach-v101593-release.apk",
+  "sha256": "b8d4a836b5f6fbbc96808bdabcfd4d56995e3d241f4423e3e470f3f574fed2ea",
+  "changelog": "Упражнения: кривые названия приседа и движений на наклонной скамье читаются по-русски.\nИтоги года считаются по записанным тренировкам, без выдуманной нормы на следующий год.\nПитание: на графике стоят дни недели, без оценки из 100.\nЦены ПРО те же: 300 ₽ в месяц и 2 490 ₽ в год. Магазины остаются «Скоро».",
   "forceUpdate": false,
   "minVersionCode": 1,
-  "buildDate": "2026-10-02T22:13:41Z",
-  "commitSha": "2d51259c9d2d5c3f059e3775d557f54abf481508",
-  "apkSizeBytes": 297679599
+  "buildDate": "2026-10-07T11:25:20Z",
+  "commitSha": "e0a15e09c89fa66f87a31ac18fa8c91df24d774e",
+  "apkSizeBytes": 298095404
 }
