@@ -1,13 +1,13 @@
 {
-  "versionCode": 101598,
-  "versionName": "2.1.598",
-  "apkUrl": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101598/LivingMotionCoach-v101598-release.apk",
-  "apkUrlFallback": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101598/LivingMotionCoach-latest.apk",
-  "sha256": "5b4594687551d6f016fffa0f589dc19dd6a914ee5b8d2c15cf62102529170e4a",
-  "changelog": "Обновили регистрацию и первый запуск: выбор цели, оборудования и уровня активности.\nДобавили загрузку своего аватара и собрали настройки профиля в одном разделе.\nИсправили восстановление профиля при входе в аккаунт на другом устройстве.",
+  "versionCode": 101599,
+  "versionName": "2.1.599",
+  "apkUrl": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101599/LivingMotionCoach-v101599-release.apk",
+  "apkUrlFallback": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101599/LivingMotionCoach-latest.apk",
+  "sha256": "5575763d0fc78b4eb48c43bea1a8732b1a59d74dbb175ea0b57bdd7a300c3177",
+  "apkSizeBytes": 302617496,
+  "changelog": "Выпуск Android с обновлённым способом доставки. Сайт и встроенное обновление используют один подписанный APK с проверяемой контрольной суммой.\nРегистрация, первый запуск, выбор аватара и единый редактор профиля доступны, как в версии 2.1.598.\n",
   "forceUpdate": false,
   "minVersionCode": 1,
-  "buildDate": "2026-11-15T20:01:53Z",
-  "commitSha": "16de79b6b7572bc6eb8f41082fb1234177b64bd8",
-  "apkSizeBytes": 302617496
+  "buildDate": "2026-11-15T21:21:41Z",
+  "commitSha": "d0657bd6d5819aa36db8094bced9734a4676acab"
 }
