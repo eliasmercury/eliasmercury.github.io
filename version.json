@@ -1,13 +1,13 @@
 {
-  "versionCode": 101594,
-  "versionName": "2.1.594",
-  "apkUrl": "https://github.com/eliasmercury/living-motion-releases/releases/latest/download/LivingMotionCoach-latest.apk",
-  "apkUrlFallback": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101594/LivingMotionCoach-v101594-release.apk",
-  "sha256": "ded7d60d4777216ac6b0325bf02f599a2ca4c2f76195d65c34edf744d10400c6",
-  "changelog": "Шаблоны: жим гантелей на наклонной, фронтальный присед и жим на обратном наклоне открывают свою карточку каталога.\nКривые подписи наклона, обратного наклона и скамьи читаются по-русски. Имена в базе не переписаны.\nНедели после первой в готовых программах по-прежнему не дописаны.\nЦены ПРО те же: 300 ₽ в месяц и 2 490 ₽ в год. Магазины остаются «Скоро».",
+  "versionCode": 101598,
+  "versionName": "2.1.598",
+  "apkUrl": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101598/LivingMotionCoach-v101598-release.apk",
+  "apkUrlFallback": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101598/LivingMotionCoach-latest.apk",
+  "sha256": "5b4594687551d6f016fffa0f589dc19dd6a914ee5b8d2c15cf62102529170e4a",
+  "changelog": "Обновили регистрацию и первый запуск: выбор цели, оборудования и уровня активности.\nДобавили загрузку своего аватара и собрали настройки профиля в одном разделе.\nИсправили восстановление профиля при входе в аккаунт на другом устройстве.",
   "forceUpdate": false,
   "minVersionCode": 1,
-  "buildDate": "2026-10-07T12:04:23Z",
-  "commitSha": "e0a15e09c89fa66f87a31ac18fa8c91df24d774e",
-  "apkSizeBytes": 298097524
+  "buildDate": "2026-11-15T20:01:53Z",
+  "commitSha": "16de79b6b7572bc6eb8f41082fb1234177b64bd8",
+  "apkSizeBytes": 302617496
 }
