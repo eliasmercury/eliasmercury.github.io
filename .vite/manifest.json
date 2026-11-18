@@ -1,6 +1,6 @@
 {
   "D:/Living Motion/website/node_modules/vinext/dist/shims/layout-segment-context.js": {
-    "file": "_next/static/chunks/layout-segment-context-On_IEwhT.js",
+    "file": "_next/static/chunks/layout-segment-context-CNhcKYIN.js",
     "name": "layout-segment-context",
     "src": "D:/Living Motion/website/node_modules/vinext/dist/shims/layout-segment-context.js",
     "isDynamicEntry": true,
@@ -92,7 +92,7 @@
     ]
   },
   "app/not-found.tsx": {
-    "file": "_next/static/chunks/not-found-Da76HZwF.js",
+    "file": "_next/static/chunks/not-found-pjjrdt7E.js",
     "name": "not-found",
     "src": "app/not-found.tsx",
     "isDynamicEntry": true,
@@ -103,11 +103,11 @@
       "_framework-BgSIrAUN.js"
     ],
     "css": [
-      "_next/static/css/not-found.1s0IWY87.css"
+      "_next/static/css/not-found.NgGuSrzD.css"
     ]
   },
   "virtual:vinext-app-browser-entry": {
-    "file": "_next/static/chunks/index-B9-LHtFl.js",
+    "file": "_next/static/chunks/index-DkaGqQ2k.js",
     "name": "index",
     "src": "virtual:vinext-app-browser-entry",
     "isEntry": true,
