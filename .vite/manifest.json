@@ -1,6 +1,6 @@
 {
   "D:/Living Motion/website/node_modules/vinext/dist/shims/layout-segment-context.js": {
-    "file": "_next/static/chunks/layout-segment-context-5NB-RN1F.js",
+    "file": "_next/static/chunks/layout-segment-context-On_IEwhT.js",
     "name": "layout-segment-context",
     "src": "D:/Living Motion/website/node_modules/vinext/dist/shims/layout-segment-context.js",
     "isDynamicEntry": true,
@@ -49,7 +49,7 @@
     ]
   },
   "app/balanced-landing.tsx": {
-    "file": "_next/static/chunks/balanced-landing-BLae5M2r.js",
+    "file": "_next/static/chunks/balanced-landing-BJZ63nWE.js",
     "name": "balanced-landing",
     "src": "app/balanced-landing.tsx",
     "isDynamicEntry": true,
@@ -61,7 +61,7 @@
       "_framework-BgSIrAUN.js"
     ],
     "css": [
-      "_next/static/css/balanced-landing.Ds9b0l6Y.css"
+      "_next/static/css/balanced-landing.kuiWnfl8.css"
     ]
   },
   "app/download/page.tsx": {
@@ -107,7 +107,7 @@
     ]
   },
   "virtual:vinext-app-browser-entry": {
-    "file": "_next/static/chunks/index-CeoDs7Zz.js",
+    "file": "_next/static/chunks/index-B9-LHtFl.js",
     "name": "index",
     "src": "virtual:vinext-app-browser-entry",
     "isEntry": true,
