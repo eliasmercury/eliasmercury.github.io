@@ -1,13 +1,13 @@
 {
-  "versionCode": 101599,
-  "versionName": "2.1.599",
-  "apkUrl": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101599/LivingMotionCoach-v101599-release.apk",
-  "apkUrlFallback": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101599/LivingMotionCoach-latest.apk",
-  "sha256": "5575763d0fc78b4eb48c43bea1a8732b1a59d74dbb175ea0b57bdd7a300c3177",
+  "versionCode": 101602,
+  "versionName": "2.1.602",
+  "apkUrl": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101602/LivingMotionCoach-v101602-release.apk",
+  "apkUrlFallback": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101602/LivingMotionCoach-latest.apk",
+  "sha256": "0ef56c55d289762d9fea0e70b4c8f4ee75f4accc4448d15b7335e114612e3874",
   "apkSizeBytes": 302617496,
-  "changelog": "Выпуск Android с обновлённым способом доставки. Сайт и встроенное обновление используют один подписанный APK с проверяемой контрольной суммой.\nРегистрация, первый запуск, выбор аватара и единый редактор профиля доступны, как в версии 2.1.598.\n",
+  "changelog": "Исправили сохранение целей и частоты тренировок при переключении профиля. Приложение отклоняет запоздалые изменения из предыдущего профиля.\n",
   "forceUpdate": false,
   "minVersionCode": 1,
-  "buildDate": "2026-11-15T21:21:41Z",
-  "commitSha": "d0657bd6d5819aa36db8094bced9734a4676acab"
+  "buildDate": "2026-11-18T22:47:41Z",
+  "commitSha": "d35111c4f1d0d2dc2b1a2bbf6eb76a6a85a47bc7"
 }
