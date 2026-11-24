@@ -1,13 +1,13 @@
 {
-  "versionCode": 101603,
-  "versionName": "2.1.603",
-  "apkUrl": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101603/LivingMotionCoach-v101603-release.apk",
-  "apkUrlFallback": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101603/LivingMotionCoach-latest.apk",
-  "sha256": "6d3db964cff5c043ba8d5077ff7b58e0cd31cb4f119f9afdf94e7f25ad7af4e1",
-  "apkSizeBytes": 302625688,
-  "changelog": "При переключении профиля цели и частота тренировок сохраняются для выбранного профиля.\n\nВ онбординге сохраняются имя, аватар и черновик настроек. Новички могут сразу начать первую тренировку с главного экрана.\n\nДневник питания сохраняет записи на выбранную дату и учитывает дробные порции. Прогресс обновляется после изменения дневника тренировок и считает ручные записи вместе с тренировками через камеру.\n",
+  "versionCode": 101608,
+  "versionName": "2.1.608",
+  "apkUrl": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101608/LivingMotionCoach-v101608-release.apk",
+  "apkUrlFallback": "https://github.com/eliasmercury/living-motion-releases/releases/download/v101608/LivingMotionCoach-latest.apk",
+  "sha256": "d43a14049f8bec010ad8ffc6ef8447e1cf691f346d8072acb836c9a4111785a5",
+  "apkSizeBytes": 302609304,
+  "changelog": "Обновили пять вкладок и оформление дневника тренировок, отчётов, питания, фильтров упражнений, профиля и «Готовности».\n\nИсправили изображение и видео жима штанги стоя, уточнили названия нескольких упражнений и поправили работу паузы в видеоплеере.\n\nВ истории замеров показываются записи с обхватами. Пустой ввод и ноль не сохраняются, а дробные значения можно ввести через запятую.\n\nИзменения дневника тренировок корректнее сохраняются при быстрых последовательных правках.\n",
   "forceUpdate": false,
   "minVersionCode": 1,
-  "buildDate": "2026-11-19T14:38:27Z",
-  "commitSha": "df90fa25514b9f4aefbe87d14dc7878e058dc5d6"
+  "buildDate": "2026-11-24T11:05:56Z",
+  "commitSha": "f5e01bf94856fe64aeac6d19b491f94a5874eaad"
 }
